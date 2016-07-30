@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Kogni.JS - Animate</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles/tour.css">
+  <script src="vendor.js"></script>
+  <script src="kogni.animate.tour.js"></script>
+</head>
+
+<xmp theme="united" style="display:none;">
+
+### Basic Usage
+
+#### Using Plain SVG
+
+* standard SVG
+* no relative groups/transformations
+* only elements in the `object` group will be imported
+* object_name should be unique
+
+#### Parameters/Naming conventions
+
+* $foo\_object\_name (any object/layer) - binds object property to variable `foo`
+* mask\_object\_name (any object/layer) - sets this as a mask of `object_name`
+* $foo\_mask\_name (any object/layer) - binds a mask to a variable `foo`
+* path\_object\_name (path) - if `object_name` was bound to a variable, this path will be used to move the object around. This means the variable will be expected to range from 0 to 1. A value of 0 moves the object to the beginning of the path and 1 moves it to the end *relative to its position in the SVG*. In other words the path is converted into a vector (facing the path's start point) which moves the object _away from its initial position_ the smaller $value gets.
+* path\_mask\_object\_name (path) - binds `object_name`'s mask to a path.
+* loop500\_object\_name (path) - creates a loop animation for `object_name` along the path with a duration of `500ms`
+
+
+#### Animation Object
+
+* `set(variable, value)` -- sets the previously bound $variable to `value`
+* `moveTo(x, y)` -- moves SVG to screen position x,y (relative to parent position)
+* `start()` -- (re)starts loops
+* `stop()` -- stops animation loops
+* `resume()` -- continues animation loop
+* `setTrigger(variable, parameters)` -- condition check bound to $variable. Parameters is a dict which may include:
+  * func -- js code which will be executed if the variable changes. `variable` is always accessable.
+  * model (optional) -- promotes model variables to be used in `func`.
+  * view (optional) -- promotes SVG elements to be used in `func`.
+
+#### Widget XML Configuration
+* `<widget>` -- parent tag
+* `<svgPath>` --  file path to SVG
+  * OR `<svg>` -- embedded SVG
+* `< style>` -- widget specific css
+* `<condition>` -- trigger function for dynamic widget adaption with attributes..
+  * `trigger` -- variable to be watched
+  * `model` -- model variables to be available in the code snippet
+  * `view` -- svg elements used in the code snippet
+  * the content code snippet in wrapped into a js function
+<h4> Variable Binding </h4>
+
+<svg id="exampleSVG"></svg>
+
+<h4> Loops </h4>
+
+<svg id="exampleLoop"></svg>
+
+#### Conditionals for more sophisticated object transformations
+
+See code for now...
+
+
+#### Using Canvas Projection
+
+* includes Canvas and Overlay (actual overlay effect has to be configured in CSS)
+* allows addition of custom Widgets
+* Widgets should implement
+  - init
+  - reset
+  - update -- update parameter may vary depending on the Widget
+* refresh loop of ALL widgets is triggered by `projection.refresh`
+* manual calibration by dragging edges.
+* also includes a (undocumented) model object logic to allow object references and conversion from world into screen coordinates
+
+<div id="exampleCanvas"></div>
+</xmp>
+
+<script src="/redist/strapdown.js"></script>
+<script type="text/javascript">
+
+
+  function onLoad(ob, $) {
+    window.factory = ob.animate;
+    ob.animate.model.measure = "ml";
+    window.canvas = ob.projection;
+    ob.animate.createElement('data/fillstate.svg', {parent:"exampleSVG"}, function(animation) {
+      window.fillstate = animation;
+      console.log('svg loaded');
+      ob.projection.init("exampleCanvas");
+      window.widget = ob.projection.loadWidget("Dummy");
+      // Condition right here!
+      fillstate.setTrigger('progress', {
+        model: ['measure'],
+        view: ['fill'],
+        func: "if (progress < 1) {console.log('fill in more!')} else {console.log('enough!', measure)} "
+      });
+      animation.set('value', 0.4)
+    });
+    ob.animate.createElement('data/stiring-000.svg', {parent:"exampleLoop"}, function(animation) {
+      window.loop = animation;
+      animation.start();
+    });
+
+  }
+</script>
+</html>

@@ -1,0 +1,93 @@
+svg {
+	background-color:#33333f;
+	font-family:"Source Sans Pro";
+	font-weight:500;
+}
+
+/*color and fill*/
+.white{
+	fill:#fff;
+}
+
+.green{
+	fill:#00C853;
+}
+
+.grey{
+	fill:#8a8a8a; !important;
+}
+
+.hide{
+  display: none;
+}
+
+.noFill{
+	fill:none;
+}
+
+/*font*/
+.semibold{
+	font-weight:600;
+}
+
+.normal{
+	font-size:2rem;
+}
+
+.large {
+	font-size:3.5rem;
+}
+
+#description {
+  text-align: center;
+}
+
+.calib-corner {
+  position: absolute;
+  margin-left: -10px;
+  margin-top: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  font-size: 10px;
+  color: white;
+  line-height: 20px;
+  text-align: center;
+  background: black;
+}
+
+.calib-active {
+  background: #aaddff;
+}
+
+#content {
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #333;
+  top: 0px;
+  left: 0px;
+}
+
+.kogni-projection {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border: 5px solid red;
+  transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+}
+
+.kogni-overlay {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  z-index: 1;
+}

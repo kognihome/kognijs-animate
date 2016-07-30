@@ -1,0 +1,25 @@
+/*.animate {*/
+  /*position: absolute;*/
+  /*top: 0px;*/
+  /*left: 0px;*/
+/*}*/
+
+#exampleCanvas{
+  background-color: #bbb;
+  width: 600px;
+  height: 600px;
+}
+
+#calibratedCanvas{
+  background-color: #bbb;
+  width: 600px;
+  height: 600px;
+}
+
+#exampleSVG{
+  background-color: #333;
+}
+
+.warning {
+  fill: #f00; !important;
+}

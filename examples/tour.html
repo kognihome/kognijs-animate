@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Kogni.JS - Animate</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles/tour.css">
+  <script src="vendor.js"></script>
+  <script src="kogni.animate.tour.js"></script>
+</head>
+
+<xmp theme="united" style="display:none;">
+
+Support the creation of customized user interface elements based on SVG (using [Snap.svg](http://snapsvg.io/)).
+In combination with the [rsb](https://github.com/aleneum/kognijs-rsb) and [ui](https://github.com/aleneum/kognijs-ui)
+module of the KogniJS framework, developers can couple interface behaviur direclty to a smart environment's system state.
+
+## Animations
+
+### Step 01 - Loading an SVG
+
+```javascript
+var animation;
+KogniJS.Animate.createElement('data/step01.svg', {parent:'step01'}, function(anim) {animation = anim});
+```
+
+<!--<svg id="step01"></svg>-->
+
+
+<!--### Step 02 - Paths and Loops-->
+
+<!--<svg id="step02"></svg>-->
+
+<!--### Step 03 - Purpose of the import group-->
+
+<!--<svg id="step03"></svg>-->
+
+<!--### Step 04 - Masks-->
+
+<!--<svg id="step04"></svg>-->
+
+<!--### Step 05 - Variable Binding-->
+
+<!--<svg id="step05"></svg>-->
+
+<!--### Step 06 - Code Snippets-->
+
+<!--<svg id="step06"></svg>-->
+
+<!--### Step 07 &#45;&#45; CSS Styling-->
+
+<!--<svg id="step07"></svg>-->
+
+## Projection
+
+<div id="exampleCanvas"></div>
+
+### Calibration
+
+#### Result
+
+<div id="calibratedCanvas"></div>
+
+
+</xmp>
+
+<script src="/redist/strapdown.js"></script>
+<script type="text/javascript">
+
+
+  function onLoad() {
+//    KogniJS.Animate.createElement('data/step01.svg', {parent:'step01'}, function(anim) {window.step01 = anim});
+//
+//    var options02 = {parent:'step02', loops:[{target:'circle', path:'circlePath', duration:5000}]};
+//    KogniJS.Animate.createElement('data/step02.svg', options02, function(anim) {
+//      window.step02 = anim;
+//      anim.start();
+//    });
+//
+//    var options03 = {parent:'step03', loops:[{target:'circle', path:'circlePath', duration:5000}]};
+//    KogniJS.Animate.createElement('data/step03.svg', options03, function(anim) {
+//      window.step03 = anim;
+//      anim.start();
+//    });
+//
+//    var options04 = {parent:'step04', loops:[{target:'circle', path:'circlePath', duration:5000}]};
+//    KogniJS.Animate.createElement('data/step04.svg', options04, function(anim) {
+//      window.step04 = anim;
+//      anim.start();
+//    });
+//
+//    var options05 = {parent: 'step05', map: {'time':['time'], 'progress': [{target:'circle', path:'circlePath'}]}};
+//    KogniJS.Animate.createElement('data/step05.svg', options05, function(anim) {
+//      window.step05 = anim;
+//      step05.set('time', "12:34");
+//      step05.set('progress', 0.9);
+//    });
+//
+//    var snippet = "var t = newVal.split(data.sep);\n" +
+//            "var p = (parseInt(t[0]) * 60 + parseInt(t[1]) + 360) % 1440 / 720;\n" +
+//            "this.set('progress', p);\n";
+//
+//    var options06 = {parent: 'step06', map: {
+//      progress: [{target:'circle', path:'circlePath'}],
+//      time: [
+//        'time',
+//        {do: snippet, data:{sep:':'}}
+//      ]
+//    }};
+//
+//    KogniJS.Animate.createElement('data/step05.svg', options06, function(anim) {
+//      window.step06 = anim;
+//      step06.set('time', '04:45');
+//    });
+//
+//    var style = "@keyframes circleAnimation {0% {fill: #8A4582} 50% {fill: #8A7645} 100% {fill: #8A4582}}\n" +
+//      "#circle { animation-name: circleAnimation; animation-duration: 1s; animation-play-state: paused;}\n" +
+//      "#time {text-align: center;}";
+//
+//    var options07 = {parent: 'step07', style: style, map: {
+//      progress: [{target:'circle', path:'circlePath'}],
+//      time: [
+//        'time',
+//        { do: snippet + "circle.attr({style: 'animation-delay:-' + p + 's;'});\n",
+//          data:{sep:':'}, resolve: ['circle']}
+//      ]
+//    }};
+//
+//    var times = ['18:21', '19:45', '21:17', '23:41', '1:19', '2:01','3:33', '5:11'];
+//    var idx = 0;
+//
+//    KogniJS.Animate.createElement('data/step05.svg', options07, function(anim) {
+//      window.step07 = anim;
+//      setInterval(function() {idx = (idx + 1) % times.length; step07.set('time', times[idx]);}, 300);
+//    });
+
+    var defaultConfig = {
+      matrix: "1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0,  0, 0, 0, 1",
+      surface: { width: 100, height: 100, origin: { x: 0.5, y: 0.5 }},
+      screen: {width: 600, height: 600}
+    };
+
+    var defaultCanvas = KogniJS.Animate.createProjection('exampleCanvas', defaultConfig);
+    defaultCanvas.showCoords();
+
+//    var calibrationConfig = {
+//      surface: { width: 100, height: 100, origin: { x: 0.5, y: 0.5 }},
+//      screen: {width: 600, height: 600}
+//    };
+//
+//    var calibrationCanvas = KogniJS.Animate.createProjection('calibrationCanvas', calibrationConfig);
+//    calibrationCanvas.showCoords();
+
+    var calibratedConfig = {
+      matrix: { attr: { use_cache: 'true' },
+        _: "0.829438, 0.071225, 0, 0.000103098, 0.0596609, 0.50144, 0, -0.000173317, 0, 0, 1, 0, 25, 22, 0, 1"},
+      surface: { width: 100, height: 100, origin: { x: 0.5, y: 0.5 }},
+      screen: { width: 600, height: 600}
+    };
+
+    var calibratedCanvas = KogniJS.Animate.createProjection('calibratedCanvas', calibratedConfig);
+    calibratedCanvas.showCoords();
+
+  }
+
+  window.onload = onLoad;
+</script>
+</html>

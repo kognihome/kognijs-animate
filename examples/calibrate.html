@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Kogni.JS - Animate</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles/test.css">
+  <script src="vendor.js"></script>
+  <script src="kogni.animate.tour.js"></script>
+</head>
+
+<div id="content"></div>
+
+<script type="text/javascript">
+  var config = {
+    surface: {
+      width: 100,
+      height: 100,
+      origin: {
+        x: 0.5,
+        y: 0.5
+      }
+    },
+    screen: {
+      width: 1920,
+      height: 1080
+    }
+  };
+
+  function onLoad() {
+    KogniJS.Animate.createProjection('content', config);
+  }
+
+  window.onload = onLoad;
+
+</script>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Kogni.JS - Animate</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles/test.css">
+  <script src="vendor.js"></script>
+  <script src="kogni.animate.tour.js"></script>
+</head>
+
+<!--<svg id="exampleSVG"></svg>-->
+
+<script type="text/javascript">
+  function onLoad(ob, $) {
+    var progress = 0.0;
+    var value = 0.0;
+    window.factory = ob.animate;
+    ob.animate.model.measure = "ml";
+    window.canvas = ob.projection;
+//    ob.animate.fromConfigXML('data/temperature.xml', {parent:"exampleSVG"}, function(animation) {
+    ob.animate.fromConfigXML('data/temperature.xml', {id:"idSVG"}, function(animation) {
+      window.object = animation;
+      console.log('svg loaded');
+      if (animation.style) {
+        document.head.appendChild(animation.style);
+        animation.updateStyle();
+      }
+      animation.set('target', 80);
+      setInterval(function() {
+        var oldVal = progress;
+        progress = (progress + 0.025) % 1.20;
+        //value = (value + 25) %  175;
+        animation.set('value', Math.round(progress * 80));
+        animation.set('progress', progress, oldVal);
+        //console.log(progress);
+        //animation.set('value', value);
+      }, 250);
+    });
+  }
+</script>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "kognijs.animate",
+  "version": "0.1.1",
+  "description": "KogniHome Web Toolkit",
+  "main": [
+      "redist/kognijs.animate.min.js"
+  ],
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "examples"
+  ]
+}

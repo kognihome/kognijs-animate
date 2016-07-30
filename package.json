@@ -1,0 +1,30 @@
+{
+  "name": "kognijs-animate",
+  "version": "0.1.0",
+  "description": "KogniHome Web Toolkit",
+  "main": "src/animate.js",
+  "files": [
+    "src/animate.js",
+    "src/projection.js",
+    "src/projectionwidget.js"
+  ],
+  "dependencies": {
+    "snapsvg": "*",
+    "loglevel": "*"
+  },
+  "devDependencies": {
+    "browser-sync": "*",
+    "browserify": "*",
+    "lodash": "*",
+    "gulp": "*",
+    "gulp-uglify": "*",
+    "resolve": "*",
+    "vinyl-source-stream": "*",
+    "vinyl-buffer": "*",
+    "mocha": "*",
+    "chai": "*",
+    "sinon": "*",
+    "sinon-chai": "*",
+    "gulp-mocha": "*"
+  }
+}
