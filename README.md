@@ -14,6 +14,7 @@ and interactive workspaces.
   - [Bower or CDN](#bower)
 * [Custom animations in 7 steps](#animations)
 * [Projection and calibration](#projection)
+* [Interactive Demo](#demo)
 * [Feedback and Contribution](#feedback)
 
 ## <a name="start"></a>Getting Started
@@ -275,6 +276,19 @@ calibratedCanvas.showCoords();
 ```
 <div id="calibratedCanvas"></div>
 
+## <a name="demo"></a>Interactive Demo
+
+An interactive demo can be started with npm and gulp:
+
+```
+git clone https://github.com/aleneum/kognijs-animate.git
+cd kognijs-animate
+npm install -g gulp # if you havent done already
+npm install # install all dependencies
+gulp server
+```
+
+Open the [tour](http://localhost:3000/examples/tour.html) in your favourite browser.
 
 ## <a name="feedback"></a>Feedback and Contribution
 
