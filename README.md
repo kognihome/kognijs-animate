@@ -288,7 +288,7 @@ npm install # install all dependencies
 gulp server
 ```
 
-Open the [tour](http://localhost:3000/examples/tour.html) in your favourite browser.
+Open the [tour](http://localhost:3000/tour.html) in your favourite browser.
 
 ## <a name="feedback"></a>Feedback and Contribution
 
