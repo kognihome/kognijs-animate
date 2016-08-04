@@ -218,8 +218,12 @@ KogniJS.Animate.createElement('data/step05.svg', options07, function(anim) {
 
 ```
 
-
 ![](examples/data/static_step07.gif)
+
+CSS `text-align` is not directly applied to SVG elements. `Animate` uses this information to realign elements after they
+have been imported.
+Manual alignment (or through code snippets) can be conducted with `Animate.align(elementName, alignment)` where alignment
+can either be 'start', 'middle' or 'end'.
 
 ## <a name="projection"></a>Projection
 
@@ -231,7 +235,7 @@ If you plan to project your GUI onto a surface, the `Projection` module of `Anim
 This allows to use canvas libraries such as [fabric](http://fabricjs.com/), [pixi](http://www.pixijs.com/)
 or [paper](http://paperjs.org/) as you are used to.
 
-<div id="exampleCanvas"></div>
+![](examples/data/static_calibrationDefault.png)
 
 ```
 var defaultConfig = {
@@ -251,7 +255,7 @@ It also changes the coordinate system from left-handed (x left; y down) to right
 
 ### Calibration
 
-![](data/calibration.png)
+![](examples/data/calibration.png)
 
 Calibration is done by dragging all points to the edges of the projection surface.
 Double click sets the initial points which can be adjusted with arrow keys.
@@ -274,7 +278,8 @@ var calibratedConfig = {
 var calibratedCanvas = KogniJS.Animate.createProjection('calibratedCanvas', calibratedConfig);
 calibratedCanvas.showCoords();
 ```
-<div id="calibratedCanvas"></div>
+
+![](examples/data/static_calibrationResult.png)
 
 ## <a name="demo"></a>Interactive Demo
 

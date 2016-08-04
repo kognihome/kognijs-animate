@@ -230,8 +230,12 @@ KogniJS.Animate.createElement('data/step05.svg', options07, function(anim) {
 
 ```
 
-
 <svg id="step07"></svg>
+
+CSS `text-align` is not directly applied to SVG elements. `Animate` uses this information to realign elements after they
+have been imported.
+Manual alignment (or through code snippets) can be conducted with `Animate.align(elementName, alignment)` where alignment
+can either be 'start', 'middle' or 'end'.
 
 ## <a name="projection"></a>Projection
 

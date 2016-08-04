@@ -3,9 +3,11 @@
 var _ = require('lodash');
 var fs = require('fs');
 var gulp = require('gulp');
+var uglify = require('gulp-uglify');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var nodeResolve = require('resolve');
+var buffer = require('vinyl-buffer');
 var browserSync = require('browser-sync');
 var mocha = require('gulp-mocha');
 var reload = browserSync.reload;
@@ -107,25 +109,26 @@ gulp.task('test', function () {
         .pipe(mocha({ reporter: 'spec' }))
 });
 
+gulp.task('build-redist', function() {
+  return browserify([
+        'src/animate.js',
+        'src/projection.js',
+        'src/main.js'
+      ],  {
+        debug: !production,
+      })
+      .bundle()
+      .pipe(source('kognijs.animate.min.js'))
+      .pipe(buffer())
+      .pipe(uglify())
+      .pipe(gulp.dest('redist/'));
+});
+
 /**
  * Helper function(s)
  */
 
-function getBowerPackageIds() {
-  // read bower.json and get dependencies' package ids
-  var bowerManifest = {};
-  try {
-    bowerManifest = require('./bower.json');
-  } catch (e) {
-    // does not have a bower.json manifest
-  }
-  return _.keys(bowerManifest.dependencies) || [];
-
-}
-
-
 function getNPMPackageIds() {
-  // read package.json and get dependencies' package ids
   var packageManifest = {};
   try {
     packageManifest = require('./package.json');
