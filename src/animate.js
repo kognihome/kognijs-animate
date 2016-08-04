@@ -113,6 +113,7 @@ Animate.processSnap = function (fragment, params, callback) {
       document.head.appendChild(animation.style);
       animation.applyTextAlign();
     }
+    animation.start();
     callback(animation);
 };
 
