@@ -76,7 +76,7 @@ gulp.task('build-tour', function () {
     b.external(id);
   });
 
-  var stream = b.bundle().pipe(source('kogni.animate.tour.js'));
+  var stream = b.bundle().pipe(source('kognijs.animate.tour.js'));
   stream.pipe(gulp.dest('./dist'));
 
   return stream;

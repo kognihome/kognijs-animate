@@ -6,7 +6,7 @@
   "files": [
     "src/animate.js",
     "src/projection.js",
-    "src/projectionwidget.js"
+    "src/projectionwidgets.js"
   ],
   "dependencies": {
     "snapsvg": "*"
