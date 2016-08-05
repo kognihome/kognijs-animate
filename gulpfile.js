@@ -27,10 +27,7 @@ gulp.task('browser-sync', function() {
     open: false,
     server: {
       baseDir: ["examples", "dist", "tests"],
-      index: "tour.html",
-      routes: {
-        "/bower_components": "bower_components"
-      }
+      index: "tour.html"
     },
   });
 });
@@ -39,23 +36,6 @@ gulp.task('build-vendor', function () {
 
   var b = browserify({
     debug: !production
-  });
-
-
-  // get all bower components ids and use 'bower-resolve' to resolve
-  // the ids to their full path, which we need for require()
-  getBowerPackageIds().forEach(function (id) {
-    var resolvedPath = bowerResolve.fastReadSync(id);
-
-    b.require(resolvedPath, {
-
-      // exposes the package id, so that we can require() from our code.
-      // for eg:
-      // require('./vendor/angular/angular.js', {expose: 'angular'}) enables require('angular');
-      // for more information: https://github.com/substack/node-browserify#brequirefile-opts
-      expose: id
-
-    });
   });
 
   // do the similar thing, but for npm-managed modules.
@@ -86,14 +66,12 @@ gulp.task('build-tour', function () {
 
   var b = browserify([
       'src/animate.js',
-      'src/test.js'
+      'src/main.js'
   ], {
     // generate source maps in non-production environment
     debug: !production
   });
-  getBowerPackageIds().forEach(function (lib) {
-    b.external(lib);
-  });
+
   getNPMPackageIds().forEach(function (id) {
     b.external(id);
   });

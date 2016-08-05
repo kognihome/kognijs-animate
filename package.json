@@ -9,8 +9,7 @@
     "src/projectionwidget.js"
   ],
   "dependencies": {
-    "snapsvg": "*",
-    "loglevel": "*"
+    "snapsvg": "*"
   },
   "devDependencies": {
     "browser-sync": "*",

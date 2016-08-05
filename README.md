@@ -82,7 +82,7 @@ SVG paths can be used to animate SVG elements. This is done by passing dictionar
 within `options`:
 
 ```javascript
-var options02 = {parent:'step02', loops:[{target:'circle', path:'circlePath', duration:5000}]};
+var options02 = {parent:'step02', loops:[{element:'circle', path:'circlePath', duration:5000}]};
 Animate.createElement('data/step02.svg', options02);
 ```
 
@@ -90,7 +90,7 @@ Animate.createElement('data/step02.svg', options02);
 |:------:|--------------:|
 | ![](examples/data/static_step02.gif) | ![](examples/data/step02.png) |
 
-*target* is the name of the object to be moved and *path* the name of the path to move along. *duration* is passed
+*element* is the name of the object to be moved and *path* the name of the path to move along. *duration* is passed
 in milliseconds.
 Animations are started on creation time but can be paused, continued or stopped. These functions are part of the `Animation` object.
 
@@ -108,7 +108,7 @@ for animations from the actual animated object. In the example below `circlePath
 but will not be visible in the final SVG.
 
 ```javascript
-var options03 = {parent:'step03', loops:[{target:'circle', path:'circlePath', duration:5000}]};
+var options03 = {parent:'step03', loops:[{element:'circle', path:'circlePath', duration:5000}]};
 Animate.createElement('data/step03.svg', options03);
 ```
 
@@ -124,7 +124,7 @@ Like other elements, masks can also be moved along paths. In the case below, cas
 along `circlePath` while the mask for the whole group (`mask_circleGroup`) is static.
 
 ```javascript
-var options04 = {parent:'step04', loops:[{target:'circle', path:'circlePath', duration:5000}]};
+var options04 = {parent:'step04', loops:[{element:'circle', path:'circlePath', duration:5000}]};
 Animate.createElement('data/step04.svg', options04);
 ```
 
@@ -145,7 +145,7 @@ The progress will be mapped from 0 (beginning of the path) to 1 (end of the path
 The value of the variables can be altered with the `Animation.set(variableName, value)` method.
 
 ```javascript
-var options05 = {parent: 'step05', map: {'time':['time'], 'progress': [{target:'circle', path:'circlePath'}]}};
+var options05 = {parent: 'step05', map: {'time':['time'], 'progress': [{element:'circle', path:'circlePath'}]}};
 Animate.createElement('data/step05.svg', options05, function(anim) {
   window.step05 = anim;
   step05.set('time', "12:34");
@@ -163,15 +163,15 @@ In cases where variables cannot be mapped directly to output, code snippets can 
 `Animate` will convert these strings into functions and wrap variable declarations for convenience.
 
 ```javascript
-var snippet = "var t = newVal.split(data.sep);" +
+var snippet = "var t = newVal.split(model.sep);" +
               "var p = (parseInt(t[0]) * 60 + parseInt(t[1]) + 360) % 1440 / 720;" +
               "this.set('progress', p);";
 
 var options06 = {parent: 'step06', map: {
-  progress: [{target:'circle', path:'circlePath'}],
+  progress: [{element:'circle', path:'circlePath'}],
   time: [
     'time',
-    {do: snippet, data:{sep:':'}}
+    {do: snippet, model:{sep:':'}}
   ]
 }};
 
@@ -201,11 +201,11 @@ var style = "@keyframes circleAnimation {0% {fill: #8A4582} 50% {fill: #8A7645} 
   "#time {text-align: center;}";
 
 var options07 = {parent: 'step07', style: style, map: {
-  progress: [{target:'circle', path:'circlePath'}],
+  progress: [{element:'circle', path:'circlePath'}],
   time: [
     'time',
     { do: snippet + "circle.attr({style: 'animation-delay:-' + p + 's;'});\n",
-      data:{sep:':'}, resolve: ['circle']}
+      model:{sep:':'}, resolve: ['circle']}
   ]
 }};
 

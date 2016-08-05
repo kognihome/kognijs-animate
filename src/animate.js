@@ -1,52 +1,48 @@
 var Snap = require('snapsvg');
-var log = require('loglevel');
 var Projection = require('./projection');
 
 function Animate() {}
-
-Animate.fromConfigXML = function(xmlPath, params, callback) {
-  var xhttp = new XMLHttpRequest();
-  var _this = this;
-  xhttp.onreadystatechange = function() {
-  if (xhttp.readyState==4 && xhttp.status==200) {
-    var doc = xhttp.responseXML;
-    window.doc = doc;
-    var root = doc.getElementsByTagName('widget')[0];
-    // load SVG data
-    var svgPath = root.getElementsByTagName('svgPath');
-    var svg = root.getElementsByTagName('svg');
-    if (svgPath.length > 0) {
-      svgPath = svgPath[0].textContent;
-      if (! svgPath.startsWith('/')) {
-        var tmp = xmlPath.split('/');
-        tmp.pop();
-        tmp = tmp.join('/');
-        svgPath = tmp+'/'+svgPath;
-      }
-      Snap.load(svgPath, function(fragment) {
-        _this.processSnap(fragment, params, function(animation) {
-          configureAnimation(animation, root, callback)
-        })
-      });
-    } else if (svg.length > 0) {
-      var fragment = Snap.parse(svg)[0];
-      _this.processSnap(fragment, function(animation) {
-        configureAnimation(animation, root, callback)
-      });
-    } else {
-      log.error("Load widget failed from", xmlPath);
-      return callback(undefined);
-    }
-  }};
-  xhttp.open("GET", xmlPath, true);
-  xhttp.send();
-};
 
 Animate.createElement = function(svgPath, params, callback) {
   var _this = this;
   Snap.load(svgPath, function(fragment) {
     _this.processSnap(fragment, params, callback);
   });
+};
+
+Animate.loadElement = function(xmlPath, params, callback) {
+  var xhttp = new XMLHttpRequest();
+  var _this = this;
+  params = params || {};
+  params.model = params.model || {};
+  xhttp.onreadystatechange = function() {
+  if (xhttp.readyState==4 && xhttp.status==200) {
+    var doc = xhttp.responseXML;
+    var root = doc.getElementsByTagName('animation')[0];
+    params.style = doc.getElementsByTagName('style')[0].textContent;
+    params.map = parseXMLMap(doc.getElementsByTagName('maps')[0], params.model);
+    params.loops = parseXMLoops(doc.getElementsByTagName('loops')[0]);
+    var svg = root.getElementsByTagName('svg')[0];
+    if (svg.children.length > 0) {
+      var fragment = Snap.parse(svg)[0];
+      _this.processSnap(fragment, params, callback);
+    } else {
+      // svg should be a text node
+      svg = svg.textContent;
+      // use relative path for SVGs in svg
+      if (!svg.startsWith('/')) {
+        var tmp = xmlPath.split('/');
+        tmp.pop();
+        tmp = tmp.join('/');
+        svg = tmp + '/' + svg;
+      }
+      Snap.load(svg, function (fragment) {
+        _this.processSnap(fragment, params, callback)
+      });
+    }
+  }};
+  xhttp.open("GET", xmlPath, true);
+  xhttp.send();
 };
 
 Animate.createProjection = function(parent, config, model) {
@@ -56,8 +52,8 @@ Animate.createProjection = function(parent, config, model) {
 Animate.processSnap = function (fragment, params, callback) {
     var params = params || {};
     if (! (params.parent || params.id)) {
-      log.error('Either parent or id have to be passed to create Animation object');
-      return;
+      throw Error("Either 'parent' or 'id' has to be passed in 'params'");
+
     }
     params.loops = params.loops || [];
 
@@ -88,14 +84,11 @@ Animate.processSnap = function (fragment, params, callback) {
       });
     }
 
-    log.debug("createProcess paths:", paths);
+    console.log("createProcess paths:", paths);
 
-    //animation._vars = bindVariables(el, progress_paths);
-    // animation._cons = {};
-    // animation._model = this.model;
     for (var idx = 0; idx < params.loops.length; ++idx) {
       var l = params.loops[idx];
-      animation.addLoop(l.target, l.path, l.duration);
+      animation.addLoop(l.element, l.path, l.duration);
     }
 
     // bindRotations(animation, rotate_paths);
@@ -114,7 +107,9 @@ Animate.processSnap = function (fragment, params, callback) {
       animation.applyTextAlign();
     }
     animation.start();
-    callback(animation);
+    if (callback) {
+      callback(animation);
+    }
 };
 
 function applyMasks(element) {
@@ -156,10 +151,10 @@ function bindVariables(animation, map) {
       if (typeof targetId === 'string') {
         var target = animation._s.select('#' + targetId);
         animation._vars[key].push(function(val) {target.node.textContent = val});
-      } else if (targetId.hasOwnProperty('target')) {
-        animation._vars[key].push(animation.getProgress(targetId.target, targetId.path));
+      } else if (targetId.hasOwnProperty('element')) {
+        animation._vars[key].push(animation.getProgress(targetId.element, targetId.path));
       } else {
-        animation.setTrigger({trigger: key, func: targetId.do, data: targetId.data, resolve: targetId.resolve});
+        animation.setTrigger({trigger: key, func: targetId.do, model: targetId.model, resolve: targetId.resolve});
       }
     }
   }
@@ -189,44 +184,44 @@ function bindStyle(animation, style) {
   animation.style.textContent = style;
 }
 
-function configureAnimation(animation, root, callback) {
-  var style = root.getElementsByTagName('style');
-  var conditions = root.getElementsByTagName('condition');
-  var mapping = root.getElementsByTagName('variable');
-
-  if (style.length > 0) {
-    animation.style = document.createElement("style");
-    var sty =  style[0].textContent;
-    var reg = sty.match(/@\w+@/g);
-    if (reg) {
-      reg.forEach(function(m) {
-        sty = sty.replace(m, "#" + animation.id + "_" + m.slice(1,-1))
-      });
+function parseXMLMap(xml, model) {
+  var map = {};
+  for (let xmlMap of xml.children) {
+    var varName = xmlMap.getElementsByTagName('variable')[0].textContent;
+    map[varName] = [];
+    for (let targetXML of xmlMap.getElementsByTagName('targets')[0].children) {
+      if (targetXML.children.length === 0) {
+        map[varName].push(targetXML.textContent.trim());
+        continue;
+      }
+      var targetVars = {model: model};
+      for (let childXML of targetXML.children) {
+          var value = undefined;
+          if (childXML.nodeName == 'resolve') {
+            value = [];
+            for (let val of childXML.children) {
+              value.push(val.textContent.trim())
+            }
+          } else {
+            value = childXML.textContent.trim();
+          }
+          targetVars[childXML.nodeName] = value;
+      }
+      map[varName].push(targetVars);
     }
-    animation.style.textContent = sty;
   }
+  return map;
+}
 
-  for (var i = 0; i < mapping.length; ++i) {
-    var v = mapping[i];
-    animation.mapping[v.getAttribute('view')] = v.getAttribute('model');
+function parseXMLoops(xml) {
+  var loops = [];
+  for (let loop of xml.children) {
+    var element = loop.getElementsByTagName('element')[0].textContent.trim();
+    var path = loop.getElementsByTagName('path')[0].textContent.trim();
+    var duration = loop.getElementsByTagName('duration')[0].textContent.trim();
+    loops.push({element: element, path: path, duration: duration});
   }
-
-  for (var i = 0; i < conditions.length; ++i) {
-    var c = conditions[i];
-    var v = c.getAttribute('view');
-    v = v ? v.split(',') : undefined;
-    var m  = c.getAttribute('model');
-    m = m ? m.split(',') : undefined;
-
-    animation.setTrigger({
-      trigger: c.getAttribute('trigger'),
-      model: m,
-      view: v,
-      func: c.textContent.trim()
-    });
-  }
-
-  callback(animation);
+  return loops;
 }
 
 function Animation(element) {
@@ -421,7 +416,7 @@ Animation.prototype.setTrigger = function(params) {
   var tmp = "";
   var variable = params.trigger;
   var resolve = params.resolve || [];
-  var tmpFunc = "tmp = function(data, newVal, oldVal) {\n";
+  var tmpFunc = "tmp = function(model, newVal, oldVal) {\n";
 
   // for (var i = model.length; i > 0; --i) {
   //   var m = model[i-1].trim();
@@ -436,7 +431,7 @@ Animation.prototype.setTrigger = function(params) {
   tmpFunc += params.func;
   tmpFunc += "}";
   eval(tmpFunc);
-  this._cons[variable] = tmp.bind(this, params.data);
+  this._cons[variable] = tmp.bind(this, params.model);
   if (!(variable in this._vars)) {
     this._vars[variable] = []
   }

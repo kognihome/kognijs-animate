@@ -1,0 +1,55 @@
+<animation>
+    <svg>step05.svg</svg>
+    <style>
+      @keyframes circleAnimation {
+        0% {fill: #8A4582}
+        50% {fill: #8A7645}
+        100% {fill: #8A4582}
+      }
+      #circle {
+        animation-name: circleAnimation;
+        animation-duration: 1s;
+        animation-play-state: paused;
+      }
+      #time {
+        text-align: center;
+      xm}
+    </style>
+    <loops>
+      <loop>
+        <element>circle</element>
+        <path>circlePath</path>
+        <duration>5000</duration>
+      </loop>
+    </loops>
+    <maps>
+        <map>
+            <variable>time</variable>
+            <targets>
+                <target>
+                    <do>
+                        var t = newVal.split(model.sep);
+                        var p = (parseInt(t[0]) * 60 + parseInt(t[1]) + 360) % 1440 / 720;
+                        this.set('progress', p);
+                        circle.attr({style: 'animation-delay:-' + p + 's;'});
+                    </do>
+                    <resolve>
+                        <element>circle</element>
+                    </resolve>
+                </target>
+                <target>
+                    time
+                </target>
+            </targets>
+        </map>
+        <map>
+            <variable>progress</variable>
+            <targets>
+              <target>
+                  <element>circle</element>
+                  <path>circlePath</path>
+              </target>
+          </targets>
+        </map>
+    </maps>
+</animation>
