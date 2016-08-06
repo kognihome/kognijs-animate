@@ -6,7 +6,7 @@ before_script:
   - npm install -g gulp
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-script: gulp test
+script: gulp test-travis
 cache:
   directories:
     - node_modules

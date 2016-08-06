@@ -22,11 +22,10 @@ module.exports = function(config) {
         ignore: ['**/node_modules/**'],
       })],
     },
-    reporters: ['coverage'],
+    reporters: ['coverage', 'coveralls'],
     coverageReporter: {
       reporters: [
-        { type: 'lcov', dir: 'coverage/' },
-        { type: 'text-summary'}
+        { type: 'lcov', dir: 'coverage/' }
       ],
     },
   });
