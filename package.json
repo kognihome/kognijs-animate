@@ -28,7 +28,7 @@
     "karma": "*",
     "mocha": "*",
     "karma-mocha": "*",
-    "karma-chrome-launcher": "*",
+    "karma-firefox-launcher": "*",
     "karma-browserify": "*",
     "browserify-istanbul": "*",
     "karma-coverage": "*",

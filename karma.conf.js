@@ -2,7 +2,7 @@ istanbul = require('browserify-istanbul');
 
 module.exports = function(config) {
   config.set({
-    browsers: ['Chrome'],
+    browsers: ['Firefox'],
     frameworks: ['mocha', 'sinon-chai', 'browserify'],
     files: [
       {pattern: 'examples/data/*.svg', watched: false, included: false, served: true},
