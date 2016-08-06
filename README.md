@@ -1,4 +1,5 @@
-# KogniJS - Animate
+# KogniJS - Animate [![Build Status](https://travis-ci.org/aleneum/kognijs-animate.svg?branch=master)](https://travis-ci.org/aleneum/kognijs-animate) [![Coverage Status](https://coveralls.io/repos/github/aleneum/kognijs-animate/badge.svg?branch=master)](https://coveralls.io/github/aleneum/kognijs-animate?branch=master)
+
 
 Support the creation of reusable customized user interface elements based on SVG (using [Snap.svg](http://snapsvg.io/))
 and all the goodies modern web technology has to offer.

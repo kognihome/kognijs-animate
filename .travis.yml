@@ -1,12 +1,14 @@
 language: node_js
 sudo: false
 node_js:
-- node
+  - node
 before_script:
-- npm install -g gulp
+  - npm install -g gulp
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
 script: gulp test
 cache:
   directories:
-  - node_modules
+    - node_modules
 env:
   secure: p/LKVu695PnurO+pq4ew2ojcDhu7qx1UvCCFzHLzl5/IACCXWbd86Z5HXci6h5H4CSG6cEFfSv5cLJ57rB0yE1umpihQZpU6PMjtWGK25VZza+nchh7jrHdsqYF7a1zoX+eGYLQcm4v+RFU2gkvhFNImqMgjj2OPweHCXrwiC+8pSU/hvENlQbRW6mC/9O0XWPKLuzvLNoKURXdoz48GEpfhVbO/Wczv1uUUKHhWe/28M6XXaydQP6fp+VG2df+mJHEnbfBoyz0DxrBfkNJkM3sBLXxf9xSvYIkFy9x1puWu/tSaW6D+UdQRyfQ90Z6H82TBmiehOjrNcBsayiTmhvbK7vIobb8ADxzPqTVczUH2HQVqa/7Osz2NZAkiHUUFGlJUcTAx5px14fQk/VXJXxl5yjJyiiJyQ4zcRbuxns2xo24EfZsUgFQ4JNQYh0IWgiLi5tm/eZW65rocmQYSyuV7d3PPbbMXHtb6bzcOD9JlOFSCs8DeWpe6Yicb5INsG0cvY4+ErYa3VXlLQYciYiVbgNLz+oiF+GKp1ufyvcYwRbWLNivr11tFpP9j5ccz0JDG2T/9J1rgh4LJzjxPzxzeGAwpkUUQPhOrlZxoV+R6WPs4FsQq52SvPnPs/8G9Qs4MgpPguLCCvDKthsloscLjtyn7E/HK8ggrY2Cqt8s=
