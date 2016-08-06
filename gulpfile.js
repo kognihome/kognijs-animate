@@ -1,16 +1,16 @@
-'use strict';
-
+"use strict";
 var _ = require('lodash');
 var fs = require('fs');
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
+var rename = require('gulp-rename');
 var nodeResolve = require('resolve');
 var buffer = require('vinyl-buffer');
 var browserSync = require('browser-sync');
-var mocha = require('gulp-mocha');
 var reload = browserSync.reload;
+var Server = require('karma').Server;
 
 var production = (process.env.NODE_ENV === 'production');
 
@@ -82,9 +82,11 @@ gulp.task('build-tour', function () {
   return stream;
 });
 
-gulp.task('test', function () {
-    return gulp.src(['tests/**/*.js'], { read: false })
-        .pipe(mocha({ reporter: 'spec' }))
+gulp.task('test', function (done) {
+  new Server({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
 });
 
 gulp.task('build-redist', function() {

@@ -2,3 +2,5 @@
 *.afdesign
 node_modules/
 dist/
+coverage/
+

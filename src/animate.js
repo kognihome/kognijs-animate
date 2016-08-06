@@ -1,3 +1,5 @@
+"use strict";
+
 var Snap = require('snapsvg');
 var Projection = require('./projection');
 
@@ -60,6 +62,7 @@ Animate.processSnap = function (fragment, params, callback) {
     var el = fragment.select('#import');
     var paths = parsePaths(fragment.selectAll('path'));
     var base = el.node.viewportElement.viewBox.baseVal;
+    console.log('HERER')
 
     var animation = new Animation(el);
     animation._paths = paths;
@@ -186,26 +189,31 @@ function bindStyle(animation, style) {
 
 function parseXMLMap(xml, model) {
   var map = {};
-  for (let xmlMap of xml.children) {
+  for (var i=0; i < xml.children.length; ++i) {
+    var xmlMap = xml.children[i];
     var varName = xmlMap.getElementsByTagName('variable')[0].textContent;
     map[varName] = [];
-    for (let targetXML of xmlMap.getElementsByTagName('targets')[0].children) {
+    var children = xmlMap.getElementsByTagName('targets')[0].children;
+    for (var j=0; j < children.length; ++j) {
+      var targetXML = children[j];
       if (targetXML.children.length === 0) {
         map[varName].push(targetXML.textContent.trim());
         continue;
       }
       var targetVars = {model: model};
-      for (let childXML of targetXML.children) {
-          var value = undefined;
-          if (childXML.nodeName == 'resolve') {
-            value = [];
-            for (let val of childXML.children) {
-              value.push(val.textContent.trim())
-            }
-          } else {
-            value = childXML.textContent.trim();
+      for (var k=0; k < targetXML.children.length; ++k) {
+        var childXML = targetXML.children[k];
+        var value = undefined;
+        if (childXML.nodeName == 'resolve') {
+          value = [];
+          for (var l=0; l < childXML.children.length; ++l) {
+            var val = childXML.children[l];
+            value.push(val.textContent.trim())
           }
-          targetVars[childXML.nodeName] = value;
+        } else {
+          value = childXML.textContent.trim();
+        }
+        targetVars[childXML.nodeName] = value;
       }
       map[varName].push(targetVars);
     }
@@ -215,7 +223,8 @@ function parseXMLMap(xml, model) {
 
 function parseXMLoops(xml) {
   var loops = [];
-  for (let loop of xml.children) {
+  for (var i=0; i < xml.children.length; ++i) {
+    var loop = xml.children[i];
     var element = loop.getElementsByTagName('element')[0].textContent.trim();
     var path = loop.getElementsByTagName('path')[0].textContent.trim();
     var duration = loop.getElementsByTagName('duration')[0].textContent.trim();

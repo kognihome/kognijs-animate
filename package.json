@@ -16,14 +16,22 @@
     "browserify": "*",
     "lodash": "*",
     "gulp": "*",
+    "gulp-rename": "*",
     "gulp-uglify": "*",
     "resolve": "*",
     "vinyl-source-stream": "*",
     "vinyl-buffer": "*",
-    "mocha": "*",
-    "chai": "*",
+    "karma-sinon-chai": "*",
     "sinon": "*",
+    "chai": "*",
     "sinon-chai": "*",
-    "gulp-mocha": "*"
-  }
+    "karma": "*",
+    "mocha": "*",
+    "karma-mocha": "*",
+    "karma-chrome-launcher": "*",
+    "karma-browserify": "*",
+    "browserify-istanbul": "*",
+    "karma-coverage": "*",
+    "karma-coveralls": "*"
+   }
 }
