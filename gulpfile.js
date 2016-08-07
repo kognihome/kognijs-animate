@@ -19,14 +19,14 @@ gulp.task('default', ['serve']);
 gulp.task('serve', ['build-vendor', 'build-tour', 'browser-sync'], function () {
   gulp.watch('src/**/*.js', ['build-tour', reload]);
   gulp.watch('examples/*.html', reload);
-  gulp.watch('tests/*.html', reload);
+  gulp.watch('test/*.html', reload);
 });
 
 gulp.task('browser-sync', function() {
   browserSync({
     open: false,
     server: {
-      baseDir: ["examples", "dist", "tests"],
+      baseDir: ["examples", "dist", "test"],
       index: "tour.html"
     },
   });

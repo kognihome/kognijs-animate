@@ -9,6 +9,7 @@ module.exports = function(config) {
       'test/**/*.spec.js'
     ],
     preprocessors: {
+      'src/*.js': ['coverage'],
       'test/**/*.spec.js': [ 'browserify' ]
     },
     client: {
