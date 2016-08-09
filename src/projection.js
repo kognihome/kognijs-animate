@@ -9,6 +9,12 @@ var Widgets = require('./projectionwidgets');
  * @return
  */
 function Projection(parent, config, model) {
+  if (!parent) {
+    throw Error('No parent provided!');
+  }
+  if (!config || !config.screen || !config.surface) {
+    throw Error('Configuration incomplete. Should provide at least surface and screen resolution.');
+  }
   this.config = config;
   this.mapping = {};
   this.widgets = {};

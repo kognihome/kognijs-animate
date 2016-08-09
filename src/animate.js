@@ -3,16 +3,29 @@
 var Snap = require('snapsvg');
 var Projection = require('./projection');
 
-function Animate() {}
+var Animate = {};
 
 Animate.createElement = function(svgPath, params, callback) {
+  if (( params === undefined || ! (params.parent || params.id))) {
+    throw Error("Either 'parent' or 'id' has to be passed in 'params'");
+  }
   var _this = this;
-  Snap.load(svgPath, function(fragment) {
+  if(svgPath instanceof SVGSVGElement) {
+    var fragment = Snap.parse(new XMLSerializer().serializeToString(svgPath))
     _this.processSnap(fragment, params, callback);
-  });
+  } else if (svgPath.startsWith('<svg')) {
+    _this.processSnap(Snap.parse(svgPath), params, callback);
+  } else {
+    Snap.load(svgPath, function(fragment) {
+      _this.processSnap(fragment, params, callback);
+    });
+  }
 };
 
 Animate.loadElement = function(xmlPath, params, callback) {
+  if (( params === undefined || ! (params.parent || params.id))) {
+      throw Error("Either 'parent' or 'id' has to be passed in 'params'");
+  }
   var xhttp = new XMLHttpRequest();
   var _this = this;
   params = params || {};
@@ -21,12 +34,22 @@ Animate.loadElement = function(xmlPath, params, callback) {
   if (xhttp.readyState==4 && xhttp.status==200) {
     var doc = xhttp.responseXML;
     var root = doc.getElementsByTagName('animation')[0];
-    params.style = doc.getElementsByTagName('style')[0].textContent;
-    params.map = parseXMLMap(doc.getElementsByTagName('maps')[0], params.model);
-    params.loops = parseXMLoops(doc.getElementsByTagName('loops')[0]);
+    var style =  doc.getElementsByTagName('style');
+    if (style.length > 0) {
+      params.style = style[0].textContent;
+    }
+    var maps = doc.getElementsByTagName('maps');
+    if (maps.length > 0) {
+      params.map = parseXMLMap(maps[0], params.model);
+    }
+    var loops = doc.getElementsByTagName('loops');
+    if (loops.length > 0) {
+      params.loops = parseXMLoops(loops[0]);
+    }
+
     var svg = root.getElementsByTagName('svg')[0];
     if (svg.children.length > 0) {
-      var fragment = Snap.parse(svg)[0];
+      var fragment = Snap.parse(new XMLSerializer().serializeToString(svg));
       _this.processSnap(fragment, params, callback);
     } else {
       // svg should be a text node
@@ -52,72 +75,70 @@ Animate.createProjection = function(parent, config, model) {
 };
 
 Animate.processSnap = function (fragment, params, callback) {
-    var params = params || {};
-    if (! (params.parent || params.id)) {
-      throw Error("Either 'parent' or 'id' has to be passed in 'params'");
+  params.loops = params.loops || [];
 
+  var el = fragment.select('#import');
+  if (! el) {
+    callback(Error('Could not parse SVG. Maybe there was no #import group?'), null);
+  }
+  var paths = parsePaths(fragment.selectAll('path'));
+  var base = el.node.viewportElement.viewBox.baseVal;
+  // default viewport size
+  base = base || {width: 800, height: 600};
+
+  var animation = new Animation(el);
+  animation._paths = paths;
+
+  if (params.parent) {
+    animation.initSnap(Snap("#" + params.parent));
+    animation.id = params.parent;
+    if (animation._s.attr("width") === null) {
+      animation._s.attr({width: base.width, height: base.height});
     }
-    params.loops = params.loops || [];
+  } else {
+    animation.initSnap(Snap(base.width, base.height));
+    animation._s.node.id = params.id;
+    animation.id = params.id;
+  }
 
-    var el = fragment.select('#import');
-    var paths = parsePaths(fragment.selectAll('path'));
-    var base = el.node.viewportElement.viewBox.baseVal;
-    console.log('HERER')
-
-    var animation = new Animation(el);
-    animation._paths = paths;
-
-    if (params.parent) {
-      animation.initSnap(Snap("#" + params.parent));
-      animation.id = params.parent;
-      if (animation._s.attr("width") === null) {
-        animation._s.attr({width: base.width, height: base.height});
-      }
-    } else {
-      animation.initSnap(Snap(base.width, base.height));
-      animation._s.node.id = params.id;
-      animation.id = params.id;
-    }
-
-    var defs = fragment.select('defs');
-    if (defs) {
-      defs.children().forEach(function(def) {
-        animation._s.append(def);
-        def.toDefs();
-      });
-    }
-
-    console.log("createProcess paths:", paths);
-
-    for (var idx = 0; idx < params.loops.length; ++idx) {
-      var l = params.loops[idx];
-      animation.addLoop(l.element, l.path, l.duration);
-    }
-
-    // bindRotations(animation, rotate_paths);
-    if (params.map) {
-      bindVariables(animation, params.map);
-    }
-
-    applyMasks(el);
-    animation._s.selectAll("#import *, #import").forEach(function(el) {
-      el.node.id = animation.id + "_" + el.node.id;
+  var defs = fragment.select('defs');
+  if (defs) {
+    defs.children().forEach(function(def) {
+      animation._s.append(def);
+      def.toDefs();
     });
+  }
 
-    if (params.style) {
-      bindStyle(animation, params.style);
-      document.head.appendChild(animation.style);
-      animation.applyTextAlign();
-    }
-    animation.start();
-    if (callback) {
-      callback(animation);
-    }
+  //console.log("createProcess paths:", paths);
+
+  for (var idx = 0; idx < params.loops.length; ++idx) {
+    var l = params.loops[idx];
+    animation.addLoop(l.element, l.path, l.duration);
+  }
+
+  // bindRotations(animation, rotate_paths);
+  if (params.map) {
+    bindVariables(animation, params.map);
+  }
+
+  applyMasks(el);
+  animation._s.selectAll("#import *, #import").forEach(function(el) {
+    el.node.id = animation.id + "_" + el.node.id;
+  });
+
+  if (params.style) {
+    bindStyle(animation, params.style);
+    document.head.appendChild(animation.style);
+    animation.applyTextAlign();
+  }
+  animation.start();
+  if (callback) {
+    callback(null, animation);
+  }
 };
 
 function applyMasks(element) {
   var masks = element.selectAll('*[id*="mask_"]');
-  if (masks === null) {return}
   masks.forEach(function(mask) {
     var id = mask.node.id;
     var target = id.substring(id.indexOf('mask_')+5);
@@ -127,21 +148,27 @@ function applyMasks(element) {
   });
 }
 
-function bindRotations(animation, paths) {
-  for (var i in paths) {
-    if (paths.hasOwnProperty(i)) {
-      var path = paths[i];
-      var prefix = /rotate\d+_/.exec((path.node.id))[0];
-      var duration = /\d+/.exec(prefix)[0];
-      var targetName = path.node.id.substring(prefix.length);
-      animation.addLoop({
-        target: targetName,
-        duration: duration,
-        path: path
-      });
-    }
-  }
-}
+// rotation not supported yet
+// function bindRotations(animation, paths) {
+//   for (var i in paths) {
+//     if (paths.hasOwnProperty(i)) {
+//       var path = paths[i];
+//       var prefix = /rotate\d+_/.exec((path.node.id))[0];
+//       var duration = /\d+/.exec(prefix)[0];
+//       var targetName = path.node.id.substring(prefix.length);
+//       animation.addLoop({
+//         target: targetName,
+//         duration: duration,
+//         path: path
+//       });
+//     }
+//   }
+// }
+// function rotateProgress(value) {
+//   var t = new Snap.Matrix();
+//   t.rotate(value*360, this.diff[0], this.diff[1]);
+//   this.el.transform(t);
+// }
 
 function bindVariables(animation, map) {
   for (var key in map) {
@@ -169,12 +196,6 @@ function parsePaths(paths) {
     res[path.node.id] = path;
   });
   return res;
-}
-
-function rotateProgress(value) {
-  var t = new Snap.Matrix();
-  t.rotate(value*360, this.diff[0], this.diff[1]);
-  this.el.transform(t);
 }
 
 function bindStyle(animation, style) {
@@ -259,7 +280,7 @@ Animation.prototype.set = function(key, value, oldVal) {
   }
 };
 
-Animation.prototype.start = function(animation) {
+Animation.prototype.start = function(animation, params) {
   var tmp = (animation) ? [this._loops[animation]] : this._loops;
   for (var ind in tmp) {
     if (tmp.hasOwnProperty(ind)) {
@@ -271,7 +292,7 @@ Animation.prototype.start = function(animation) {
         element: loop.element,
         path: loop.path,
         duration: loop.duration,
-        looped: true,
+        looped: (params) ? params.looped : true,
         offset: {x: -loop.center.x, y: -loop.center.y},
       }, loop);
     }
@@ -331,26 +352,16 @@ Animation.prototype.resume = function(animation) {
   for (var ind in tmp) {
     if (tmp.hasOwnProperty(ind)) {
       var loop = tmp[ind];
-      if (loop.hasOwnProperty('control')) {
-          var t = loop.control.s * loop.control.end;
-          loop.control.stop();
-          this.tween({
-            element: loop.element,
-            path: loop.path,
-            duration: loop.duration,
-            start: t,
-            looped: true,
-            offset: {x: -loop.center.x, y: -loop.center.y},
-          }, loop);
-      } else {
-        this.tween({
-          element: loop.element,
-          path: loop.path,
-          duration: loop.duration,
-          looped: true,
-          offset: {x: -loop.center.x, y: -loop.center.y},
-        }, loop);
-      }
+      var t = loop.control.s * loop.control.end;
+      loop.control.stop();
+      this._tween({
+        element: loop.element,
+        path: loop.path,
+        duration: loop.duration,
+        start: t,
+        looped: true,
+        offset: {x: -loop.center.x, y: -loop.center.y},
+      }, loop);
     }
   }
 };
@@ -390,7 +401,6 @@ Animation.prototype._tween = function(params, animObj) {
   var duration = params.duration || 1000;
   var looped = params.looped || false;
   var offset = params.offset || 0;
-  var tmpAnim = animObj || {};
   var func;
   if (looped) {
     func = function() {
@@ -401,20 +411,19 @@ Animation.prototype._tween = function(params, animObj) {
         duration: duration,
         looped: looped,
         offset: offset,
-      }, tmpAnim);
+      }, animObj);
     }
   } else {
     func = function() {};
   }
   var len = Snap.path.getTotalLength(params.path);
   var fac = (len-start)/len;
-  tmpAnim.control = Snap.animate(start, len, function (value) {
+  animObj.control = Snap.animate(start, len, function (value) {
     var current = Snap.path.getPointAtLength(params.path, value);
     var mat = new Snap.Matrix();
     mat.translate(current.x + offset.x, current.y + offset.y);
     params.element.transform(mat);
   }, duration*fac, mina.linear, func);
-  if (! animObj) return tmpAnim;
 };
 
 Animation.prototype.moveTo = function(x, y) {
@@ -441,9 +450,9 @@ Animation.prototype.setTrigger = function(params) {
   tmpFunc += "}";
   eval(tmpFunc);
   this._cons[variable] = tmp.bind(this, params.model);
-  if (!(variable in this._vars)) {
-    this._vars[variable] = []
-  }
+  // if (!(variable in this._vars)) {
+  //   this._vars[variable] = []
+  // }
 };
 
 Animation.prototype.applyTextAlign = function() {

@@ -6,11 +6,16 @@ module.exports = function(config) {
     frameworks: ['mocha', 'sinon-chai', 'browserify'],
     files: [
       {pattern: 'examples/data/*.svg', watched: false, included: false, served: true},
+      {pattern: 'examples/data/*.xml', watched: false, included: false, served: true},
       'test/**/*.spec.js'
     ],
     preprocessors: {
       'src/*.js': ['coverage'],
       'test/**/*.spec.js': [ 'browserify' ]
+    },
+    autoWatch: true,
+    watchify: {
+      poll: true
     },
     client: {
       chai: {
@@ -23,7 +28,7 @@ module.exports = function(config) {
         ignore: ['**/node_modules/**'],
       })],
     },
-    reporters: ['coverage'],
+    reporters: ['coverage', 'progress'],
     coverageReporter: {
       reporters: [
         { type: 'lcov', dir: 'coverage/' },

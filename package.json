@@ -30,6 +30,7 @@
     "karma-mocha": "*",
     "karma-firefox-launcher": "*",
     "karma-browserify": "*",
+    "watchify": "*",
     "browserify-istanbul": "*",
     "karma-coverage": "*",
     "karma-coveralls": "*"

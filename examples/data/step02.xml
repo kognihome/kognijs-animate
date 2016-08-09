@@ -1,0 +1,12 @@
+<animation>
+  <svg width="100%" height="100%" viewBox="0 0 480 240" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+    <g id="import"><path id="circlePath" d="M120,120l240,0" style="fill:none;stroke-width:1px;stroke:#000;"/><path id="circle" d="M186.512,178.793c-33.411,36.799 -90.412,39.551 -127.211,6.141c-36.8,-33.411 -39.551,-90.412 -6.141,-127.211c33.41,-36.8 90.412,-39.551 127.211,-6.141c36.799,33.41 39.551,90.412 6.141,127.211Z" style="fill:#8a4582;"/></g>
+  </svg>
+  <loops>
+    <loop>
+      <element>circle</element>
+      <path>circlePath</path>
+      <duration>5000</duration>
+    </loop>
+  </loops>
+</animation>
