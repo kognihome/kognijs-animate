@@ -265,13 +265,13 @@ Space cycles through the edges.
 
 #### Result
 
-With `use_cache`, the projection can be configured to try to load a matrix from the local storage.
-If no matrix is found, the backup matrix passed as `_` will be used.
+With `preferCachedMatrix`, the projection can be configured to try to load a matrix from the local storage.
+If no matrix is found, the backup matrix passed as `matrix` will be used.
 
 ```javascript
 var calibratedConfig = {
-  matrix: { attr: { use_cache: 'true' },
-    _: "0.829438, 0.071225, 0, 0.000103098, 0.0596609, 0.50144, 0, -0.000173317, 0, 0, 1, 0, 25, 22, 0, 1"},
+  matrix: "0.829438, 0.071225, 0, 0.000103098, 0.0596609, 0.50144, 0, -0.000173317, 0, 0, 1, 0, 25, 22, 0, 1",
+  preferCachedMatrix: true,
   surface: { width: 100, height: 100, origin: { x: 0.5, y: 0.5 }},
   screen: { width: 600, height: 600}
 };

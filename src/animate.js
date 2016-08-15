@@ -6,15 +6,17 @@ var Projection = require('./projection');
 var Animate = {};
 
 Animate.createElement = function(svgPath, params, callback) {
-  if (( params === undefined || ! (params.parent || params.id))) {
+  if (( params === undefined || !(params.parent || params.id))) {
     throw Error("Either 'parent' or 'id' has to be passed in 'params'");
   }
   var _this = this;
-  if(svgPath instanceof SVGSVGElement) {
+  if (svgPath instanceof SVGSVGElement) {
     var fragment = Snap.parse(new XMLSerializer().serializeToString(svgPath))
     _this.processSnap(fragment, params, callback);
   } else if (svgPath.startsWith('<svg')) {
     _this.processSnap(Snap.parse(svgPath), params, callback);
+  } else if (svgPath.endsWith('.xml')) {
+    _this._loadElement(svgPath, params, callback);
   } else {
     Snap.load(svgPath, function(fragment) {
       _this.processSnap(fragment, params, callback);
@@ -22,10 +24,7 @@ Animate.createElement = function(svgPath, params, callback) {
   }
 };
 
-Animate.loadElement = function(xmlPath, params, callback) {
-  if (( params === undefined || ! (params.parent || params.id))) {
-      throw Error("Either 'parent' or 'id' has to be passed in 'params'");
-  }
+Animate._loadElement = function(xmlPath, params, callback) {
   var xhttp = new XMLHttpRequest();
   var _this = this;
   params = params || {};
@@ -258,7 +257,6 @@ function Animation(element) {
   this._element = element;
   this._loops = {};
   this._cons = {};
-  this.mapping = {};
   this._model = {};
   this._vars = {};
 }
@@ -431,15 +429,10 @@ Animation.prototype.moveTo = function(x, y) {
 };
 
 Animation.prototype.setTrigger = function(params) {
-  var tmp = "";
+  var tmp;
   var variable = params.trigger;
   var resolve = params.resolve || [];
   var tmpFunc = "tmp = function(model, newVal, oldVal) {\n";
-
-  // for (var i = model.length; i > 0; --i) {
-  //   var m = model[i-1].trim();
-  //   tmpFunc += "var " + m + " = this._model." + m + ";\n";
-  // }
 
   for (var j = 0; j < resolve.length; ++j) {
     var v = resolve[j];
@@ -450,9 +443,6 @@ Animation.prototype.setTrigger = function(params) {
   tmpFunc += "}";
   eval(tmpFunc);
   this._cons[variable] = tmp.bind(this, params.model);
-  // if (!(variable in this._vars)) {
-  //   this._vars[variable] = []
-  // }
 };
 
 Animation.prototype.applyTextAlign = function() {

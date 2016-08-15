@@ -1,7 +1,5 @@
 "use strict";
 
-var Widgets = require('./projectionwidgets');
-
 /**
  * Description
  * @method Projection
@@ -18,7 +16,6 @@ function Projection(parent, config, model) {
   this.config = config;
   this.mapping = {};
   this.widgets = {};
-  this.WidgetDefs = Widgets;
   this.model = model || {};
   (this.config.matrix) ? this.loadCalibration(parent) : this.calibrate(parent);
 }
@@ -54,14 +51,10 @@ Projection.prototype.loadCalibration = function(target) {
   var proj = document.getElementById("projection_"+this.target);
   var over = document.getElementById("overlay_"+this.target);
   var t = this.config.matrix;
-  if (t.hasOwnProperty('attr')) {
-    if ((t.attr.use_cache == 'true') && (localStorage.getItem("matrix"))) {
-      t = localStorage.getItem("matrix");
-    } else if ('_' in t) {
-      t = t._
-    }
+  var local = localStorage.getItem("matrix");
+  if (this.config.preferCachedMatrix && local) {
+    t = local;
   }
-
   t = "matrix3d(" + t + ")";
   proj.style["-webkit-transform"] = t;
   proj.style["-moz-transform"] = t;
@@ -104,7 +97,7 @@ Projection.prototype.calibrate = function(target) {
 	  _this._update();
 	});
   window.addEventListener("keydown", function(e) {
-    if (e.keyCode ==  80) { //p
+    if (e.keyCode ==  83) { // s
        _this.saveCalibration();
     } else if (e.keyCode === 37) { // ARROW_LEFT
         _this.corners[_this.currentCorner].x -= 1;
@@ -130,7 +123,7 @@ Projection.prototype.calibrate = function(target) {
   this.ctx.fillText("double click -- move marker to mouse position", 300, 100);
   this.ctx.fillText("arrow keys -- move marker up/down/left/right", 300, 150);
   this.ctx.fillText("space -- switch marker clockwise", 300, 200);
-  this.ctx.fillText("p -- save transformation matrix", 300, 250);
+  this.ctx.fillText("s -- save transformation matrix", 300, 250);
   this._update();
 };
 
@@ -167,25 +160,15 @@ Projection.prototype.showCoords = function() {
 };
 
 Projection.prototype.mapCoords = function (x, y) {
-  try {
-    var screen_x = x/this.mapping.surfaceWidth * this.mapping.screenWidth + this.mapping.offsetX;
-    var screen_y = this.mapping.offsetY - (y/this.mapping.surfaceHeight * this.mapping.screenHeight);
-    return [screen_x, screen_y];
-  } catch (err) {
-    console.log(err);
-  }
+  var screen_x = x/this.mapping.surfaceWidth * this.mapping.screenWidth + this.mapping.offsetX;
+  var screen_y = this.mapping.offsetY - (y/this.mapping.surfaceHeight * this.mapping.screenHeight);
+  return [screen_x, screen_y];
 };
 
-Projection.prototype.addOverlay = function(id) {
-  var newElem = document.createElement('div');
-  newElem.id = id;
-  newElem.classList.add('overlay-child');
-  this.overlay.appendChild(newElem);
-  return $(newElem);
-};
-
-Projection.prototype.refresh = function () {
-  this.canvas.renderAll();
+Projection.prototype.addWidget = function(widget, name) {
+  name = name ||  "widget_" + this.widgets.length
+  this.widgets[name] = widget;
+  widget.reset();
 };
 
 Projection.prototype.resetWidgets = function () {
@@ -193,70 +176,6 @@ Projection.prototype.resetWidgets = function () {
     this.widgets[key].reset();
   }
 };
-
-Projection.prototype.resolveObjectReference = function(object_reference, center) {
-  center = center || false;
-  var result;
-  if (object_reference.object && object_reference.object.box) {
-    result = this.rstBoxToView(object_reference.object.box, center);
-    result.id = object_reference.object.object_id;
-    result.temperature = object_reference.object.object_temperature_celsius;
-    result.box = object_reference.object.box;
-  } else if (object_reference.object_id) {
-    var ob = this.model.detection.objects.filter(function(val) {
-      // if (val.object_id.id === object_reference.object_id.id) {
-        return val.object_id.type === object_reference.object_id.type;
-      //} else {
-      //  return false;
-      //}
-    });
-    if (ob.length !== 1) {
-      if (object_reference.pos) {
-        var s = this.mapCoords(object_reference.pos.x, object_reference.pos.y);
-        result = {id: object_reference.object_id, left: s[0], top: s[1], box: null};
-      } else {
-        console.log("do not know this object with type " + object_reference.object_id.type);
-        result = {id: object_reference.object_id, top: -1000, left: -1000, box: null};
-      }
-      //console.log(result);
-      return result;
-    }
-
-    ob = ob[0];
-    result = this.rstBoxToView(ob.box, center);
-    result.id = ob.object_id;
-    result.temperature = ob.object_temperature_celsius;
-    result.box = ob.box;
-  } else {
-    var s = this.mapCoords(object_reference.pos.x, object_reference.pos.y)
-    result = {left: s[0], top: s[1], id: null, box: null};
-  }
-  return result;
-};
-
-Projection.prototype.rstBoxToView = function(box, center) {
-  center = center || false;
-  var tr = this.mapCoords(box.left_front_bottom.x + box.width,
-                           box.left_front_bottom.y + box.depth);
-  var bl = this.mapCoords(box.left_front_bottom.x,
-                           box.left_front_bottom.y);
-  var w = tr[0] - bl[0];
-  var h = bl[1] - tr[1];
-  if (center) {
-    bl[0] = bl[0] + w/2;
-    tr[1] = tr[1] + h/2;
-  }
-  return {left: bl[0], top: tr[1], width: w, height: h};
-};
-
-Projection.prototype.loadWidget = function(type, name) {
-  name = name || type;
-  var Type = this.WidgetDefs[type];
-  var x  = new Type(this);
-  this.widgets[name] = x;
-  return x;
-};
-
 
 // internal functions below...
 
@@ -290,11 +209,6 @@ function multmv(m, v) { // multiply matrix and vector
   ];
 }
 
-function pdbg(m, v) {
-  var r = multmv(m, v);
-  return r + " (" + r[0]/r[2] + ", " + r[1]/r[2] + ")";
-}
-
 function basisToPoints(x1, y1, x2, y2, x3, y3, x4, y4) {
   var m = [
     x1, x2, x3,
@@ -318,11 +232,6 @@ function general2DProjection(
   var s = basisToPoints(x1s, y1s, x2s, y2s, x3s, y3s, x4s, y4s);
   var d = basisToPoints(x1d, y1d, x2d, y2d, x3d, y3d, x4d, y4d);
   return multmm(d, adj(s));
-}
-
-function project(m, x, y) {
-  var v = multmv(m, [x, y, 1]);
-  return [v[0]/v[2], v[1]/v[2]];
 }
 
 function transform2d(elt, x1, y1, x2, y2, x3, y3, x4, y4) {

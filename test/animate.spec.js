@@ -45,20 +45,20 @@ describe("Animate Factory", function () {
   });
 
   it('should ceate an element from XML',function(done) {
-    Animate.loadElement('base/examples/data/step07.xml', {id:'foo'}, function(err, animation){
+    Animate.createElement('base/examples/data/step07.xml', {id:'foo'}, function(err, animation){
       animation.set('time', '12:12');
       done(err);
     });
   });
 
   it('should create an element from XML with loops', function (done) {
-      Animate.loadElement('base/examples/data/step02.xml', {id: 'bar'}, function (err, animation) {
+      Animate.createElement('base/examples/data/step02.xml', {id: 'bar'}, function (err, animation) {
         done(err);
       });
   });
 
   it('should create an element from XML with defs', function (done) {
-    Animate.loadElement('base/examples/data/blackwhite.xml', {id: 'baz'}, function (err, animation) {
+    Animate.createElement('base/examples/data/blackwhite.xml', {id: 'baz'}, function (err, animation) {
       done(err);
     });
   });
@@ -75,7 +75,7 @@ describe("Animate Factory", function () {
   });
 
   it('should control animation loops', function (done) {
-      Animate.loadElement('base/examples/data/step07.xml', {id: 'bar'}, function (err, animation) {
+      Animate.createElement('base/examples/data/step07.xml', {id: 'bar'}, function (err, animation) {
         expect(err).to.be.a('null');
         animation.stop();
         animation.resume();
