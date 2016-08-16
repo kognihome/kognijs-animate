@@ -2,6 +2,7 @@
 
 var Snap = require('snapsvg');
 var Projection = require('./projection');
+var AnimationWidget = require('./animationwidget');
 
 var Animate = {};
 
@@ -71,6 +72,10 @@ Animate._loadElement = function(xmlPath, params, callback) {
 
 Animate.createProjection = function(config, model) {
   return new Projection(config, model);
+};
+
+Animate.createWidget = function(svgPath, params, callback) {
+  return new AnimationWidget(svgPath, params, callback);
 };
 
 Animate.processSnap = function (fragment, params, callback) {
