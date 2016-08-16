@@ -69,8 +69,8 @@ Animate._loadElement = function(xmlPath, params, callback) {
   xhttp.send();
 };
 
-Animate.createProjection = function(parent, config, model) {
-  return new Projection(parent, config, model);
+Animate.createProjection = function(config, model) {
+  return new Projection(config, model);
 };
 
 Animate.processSnap = function (fragment, params, callback) {

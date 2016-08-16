@@ -24,6 +24,7 @@ describe("Projection Factory", function () {
 
   beforeEach(function(){
     defaultConfig = {
+      parent: "parent",
       matrix: "1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0,  0, 0, 0, 1",
       surface: { width: 100, height: 100, origin: { x: 0.5, y: 0.5 }},
       screen: {width: 100, height: 100}
@@ -42,17 +43,16 @@ describe("Projection Factory", function () {
 
   it('should throw due to incomplete configurations', function () {
     expect(function(){Animate.createProjection()}).to.throw(Error);
-    expect(function(){Animate.createProjection('parent')}).to.throw(Error);
-    expect(function(){Animate.createProjection('parent', {})}).to.throw(Error);
-    expect(function(){Animate.createProjection('parent', {
+    expect(function(){Animate.createProjection({parent: 'parent'})}).to.throw(Error);
+    expect(function(){Animate.createProjection({parent: 'parent',
       surface: {width: 100, height: 100, origin: { x: 0.5, y: 0.5 }}})}).to.throw(Error);
-    expect(function(){Animate.createProjection('parent', {
+    expect(function(){Animate.createProjection({ parent: 'parent',
       screen: {width: 600, height: 600}})}).to.throw(Error);
   });
 
   it('should create a calibration view', function() {
     delete defaultConfig.matrix;
-    Animate.createProjection('parent', defaultConfig);
+    Animate.createProjection(defaultConfig);
     // click to set box somewhere
     var mEvent = new MouseEvent('dblclick', {
       view: window,
@@ -77,24 +77,24 @@ describe("Projection Factory", function () {
   });
 
   it('should create a calibrated view', function() {
-    var proj = Animate.createProjection('parent', defaultConfig);
+    var proj = Animate.createProjection(defaultConfig);
     proj.showCoords();
   });
 
   it('should save a calibration result', function() {
     delete defaultConfig.matrix;
-    var p = Animate.createProjection('parent', defaultConfig);
+    var p = Animate.createProjection(defaultConfig);
     var kSave = new KeyboardEvent('keydown', {keyCode: 83, bubbles : true, cancelable : true });
     document.body.dispatchEvent(kSave);
   });
 
   it('should load a calibration result', function() {
     defaultConfig.preferCachedMatrix = true;
-    var p = Animate.createProjection('parent', defaultConfig);
+    var p = Animate.createProjection(defaultConfig);
   });
 
   it('should add a Widget', function () {
-    var p = Animate.createProjection('parent', defaultConfig);
+    var p = Animate.createProjection(defaultConfig);
     var d = new Dummy();
     p.addWidget(d);
     expect(d.updateStub.called).to.be.false;
@@ -106,7 +106,7 @@ describe("Projection Factory", function () {
   })
 
   it('should add a Widget', function () {
-    var p = Animate.createProjection('parent', defaultConfig);
+    var p = Animate.createProjection(defaultConfig);
     var d = new Dummy();
     p.addWidget(d);
     expect(d.updateStub.called).to.be.false;

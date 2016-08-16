@@ -6,18 +6,15 @@
  * @param {} config
  * @return
  */
-function Projection(parent, config, model) {
-  if (!parent) {
-    throw Error('No parent provided!');
-  }
-  if (!config || !config.screen || !config.surface) {
-    throw Error('Configuration incomplete. Should provide at least surface and screen resolution.');
+function Projection(config, model) {
+  if (!config || !config.parent || !config.screen || !config.surface) {
+    throw Error('Configuration incomplete. Should provide at least parent, surface and screen resolution.');
   }
   this.config = config;
   this.mapping = {};
   this.widgets = {};
   this.model = model || {};
-  (this.config.matrix) ? this.loadCalibration(parent) : this.calibrate(parent);
+  (this.config.matrix) ? this.loadCalibration(config.parent) : this.calibrate(config.parent);
 }
 
 Projection.ELEM = "<div id='container_{0}'>" +

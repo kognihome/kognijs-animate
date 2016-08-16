@@ -3,6 +3,7 @@ var Animate = require('../src/animate');
 var AnimationWidget = require('../src/animationwidget');
 
 var defaultConfig = {
+  parent: "parent",
   matrix: "1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0,  0, 0, 0, 1",
   surface: { width: 100, height: 100, origin: { x: 0.5, y: 0.5 }},
   screen: {width: 100, height: 100}
@@ -10,7 +11,6 @@ var defaultConfig = {
 
 // See http://docs.cor-lab.org/rst-manual/0.14/html/generated/stable/package-rst-geometry.html#rst.geometry.AxisAlignedBoundingBox3DFloat
 // for reference
-
 var objectId = {type:'object', id: '1'};
 var objectPosition = {x: 0.0, y: 0.0};
 var objectBox = {
@@ -41,7 +41,7 @@ describe("AnimationWidget", function () {
       'afterbegin',
       parentHTML
     );
-    projection = Animate.createProjection('parent', defaultConfig);
+    projection = Animate.createProjection(defaultConfig);
     params.projection = projection;
   });
 
