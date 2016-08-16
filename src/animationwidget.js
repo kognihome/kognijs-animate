@@ -2,6 +2,10 @@
 
 var Animate = require('../src/animate');
 
+Animate.createWidget = function(svgPath, params, callback) {
+  return new AnimationWidget(svgPath, params, callback);
+};
+
 function AnimationWidget(svgPath, params, callback) {
   if (! params.projection ) {
     throw Error("Parameter 'projection' has not been passed to AnimationWidget.");
