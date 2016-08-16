@@ -55,6 +55,12 @@ describe("AnimationWidget", function () {
     });
   });
 
+  it('should use Animate factory', function() {
+    var anim = Animate.createWidget(animationSVG, params, function(err, anim) {
+      done(err);
+    });
+  });
+
   it('should update a widget with box', function (done) {
     params.resolveObjectReference = true;
     params.moveToReference = true;
