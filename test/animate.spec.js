@@ -2,7 +2,7 @@
 var Animate = require('../src/animate');
 
 describe("Animate Factory", function () {
-  it('should ceate an element from path',function(done) {
+  it('should ceate an element from path', function(done) {
     Animate.createElement('base/examples/data/step01.svg', {id:'foo'}, function(err, animation){
       expect(function(){Animate.createElement()}).to.throw(Error);
       expect(function(){Animate.createElement(undefined, {}, undefined)}).to.throw(Error);
@@ -15,8 +15,8 @@ describe("Animate Factory", function () {
   it('should create and element from SVG string', function(done) {
     Animate.createElement('<svg><g id="import"><rect x="100" y="10" width="95" height="60"  /></g></svg>',
       {id:'foo'}, function(err, animation){
-      done(err);
-    });
+        done(err);
+      });
   });
 
   it('should create and element from SVG string', function(done) {

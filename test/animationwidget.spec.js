@@ -55,7 +55,7 @@ describe("AnimationWidget", function () {
     });
   });
 
-  it('should use Animate factory', function() {
+  it('should use Animate factory', function(done) {
     var anim = Animate.createWidget(animationSVG, params, function(err, anim) {
       done(err);
     });
