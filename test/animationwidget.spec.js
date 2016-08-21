@@ -42,21 +42,21 @@ describe("AnimationWidget", function () {
       parentHTML
     );
     projection = Animate.createProjection(defaultConfig);
+    projection.init();
     params.projection = projection;
   });
 
-  it('should just create a widget', function (done) {
+  it('should create a widget', function (done) {
     expect(function() {new AnimationWidget()}).to.throw(Error);
-    expect(function() {new AnimationWidget(undefined, {id: 'foo'})}).to.throw(Error);
-    expect(function() {new AnimationWidget(undefined, {projection: projection})}).to.throw(Error);
-    expect(function() {new AnimationWidget(undefined, {parent: 'bar', projection: projection})}).to.throw(Error);
-    new AnimationWidget(animationSVG, {id: 'foo', projection: projection}, function(err, anim) {
+    expect(function() {new AnimationWidget({id: 'foo'})}).to.throw(Error);
+    Animate.createWidget(animationSVG, {id: 'foo', projection: projection}, function(err, anim) {
       done(err);
     });
   });
 
+
   it('should use Animate factory', function(done) {
-    var anim = Animate.createWidget(animationSVG, params, function(err, anim) {
+    Animate.createWidget(animationSVG, params, function(err, anim) {
       done(err);
     });
   });
@@ -64,8 +64,8 @@ describe("AnimationWidget", function () {
   it('should update a widget with box', function (done) {
     params.resolveObjectReference = true;
     params.moveToReference = true;
-    new AnimationWidget(animationSVG, params, function(err, anim) {
-      anim.update(testWithBox);
+    Animate.createWidget(animationSVG, params, function(err, widget) {
+      widget.update(testWithBox);
       done();
     });
   });
@@ -73,7 +73,7 @@ describe("AnimationWidget", function () {
   it('should update a widget with pos', function (done) {
     params.resolveObjectReference = true;
     params.moveToReference = true;
-    new AnimationWidget(animationSVG, params, function(err, anim) {
+    Animate.createWidget(animationSVG, params, function(err, anim) {
       anim.update(testWithPos);
       done();
     });
@@ -82,7 +82,7 @@ describe("AnimationWidget", function () {
   it('should update a widget with pos due to wrong ID', function (done) {
     params.resolveObjectReference = true;
     params.moveToReference = true;
-    new AnimationWidget(animationSVG, params, function(err, anim) {
+    Animate.createWidget(animationSVG, params, function(err, anim) {
       projection.model.detection = {objects: trackingResult};
       anim.update(testWithPosFallback);
       done();
@@ -92,7 +92,7 @@ describe("AnimationWidget", function () {
   it('should NOT update a widget with ID', function (done) {
     params.resolveObjectReference = true;
     params.moveToReference = true;
-    new AnimationWidget(animationSVG, params, function(err, anim) {
+    Animate.createWidget(animationSVG, params, function(err, anim) {
       projection.model.detection = {objects: []};
       anim.update(testWithId);
       done();
@@ -102,7 +102,7 @@ describe("AnimationWidget", function () {
   it('should update a widget with ID', function (done) {
     params.resolveObjectReference = true;
     params.moveToReference = true;
-    new AnimationWidget(animationSVG, params, function(err, anim) {
+    Animate.createWidget(animationSVG, params, function(err, anim) {
       projection.model.detection = {objects: trackingResult};
       anim.update(testWithId);
       done();
@@ -111,7 +111,7 @@ describe("AnimationWidget", function () {
 
   it('should update a widget with timeout', function (done) {
     params.timeout = 100;
-    new AnimationWidget(animationSVG, params, function(err, anim) {
+    Animate.createWidget(animationSVG, params, function(err, anim) {
       anim.update(testWithPos);
       setTimeout(function(){done()}, 200);
     });

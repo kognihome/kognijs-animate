@@ -1,35 +1,23 @@
 "use strict";
 
-var Animate = require('../src/animate');
-
-Animate.createWidget = function(svgPath, params, callback) {
-  return new AnimationWidget(svgPath, params, callback);
-};
-
-function AnimationWidget(svgPath, params, callback) {
+function AnimationWidget(params) {
   if (! params.projection ) {
     throw Error("Parameter 'projection' has not been passed to AnimationWidget.");
   }
   if (params.parent) {
     throw Error("AnimationWidget supports only 'id'");
   }
-  this.projection = params.projection;
-
   if (params.timeout) {
     this.timeout = params.timeout;
     this.timeoutTimer = 0;
   }
 
+  this.projection = params.projection;
+  this.animation = params.animation;
   this.resolve = params.resolveObjectReference;
   this.moveToReference = params.moveToReference;
-
-  var _this = this;
-  Animate.createElement(svgPath, params, function(err, anim) {
-    _this.projection.overlay.appendChild(document.getElementById(params.id));
-    _this.animation = anim;
-    _this.reset();
-    callback(err, _this);
-  });
+  this.projection.overlay.appendChild(document.getElementById(params.id));
+  this.reset();
 }
 
 AnimationWidget.prototype._update = function(value) {

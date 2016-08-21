@@ -7,14 +7,22 @@
  * @return
  */
 function Projection(config, model) {
-  if (!config || !config.parent || !config.screen || !config.surface) {
-    throw Error('Configuration incomplete. Should provide at least parent, surface and screen resolution.');
+  if (!config || !config.parent) {
+    throw Error('No parent element has been provided!');
   }
   this.config = config;
+
+  // disable mapping
+  if (! (config.surface && config.screen)) {
+    this.mapCoords = function (x, y) { return {x: x, y: y};};
+    parent = document.getElementById(config.parent);
+    this.config.screen = {width: parent.offsetWidth, height: parent.offsetHeight};
+    delete this.config.surface;
+  }
+
   this.mapping = {};
   this.widgets = {};
   this.model = model || {};
-  (this.config.matrix) ? this.loadCalibration(config.parent) : this.calibrate(config.parent);
 }
 
 Projection.ELEM = "<div id='container_{0}'>" +
@@ -27,44 +35,43 @@ Projection.CALIB = " <div id=\"marker0\" class=\"calib-active calib-corner\">TL<
   " <div id=\"marker3\" class=\"calib-corner\">BL</div>" +
   " <div id=\"marker2\" class=\"calib-corner\">BR</div>";
 
-Projection.prototype._init = function(target) {
-  this.target = target;
+Projection.prototype._init = function() {
+  this.target = this.config.parent;
   var template = document.createElement('template');
   template.innerHTML = Projection.ELEM.format(this.target, this.config.screen.width,
                                               this.mapping.screenHeight || this.config.screen.height);
-  document.getElementById(target).appendChild(template.content.firstChild);
-
-};
-
-Projection.prototype.loadCalibration = function(target) {
-  this.mapping.surfaceWidth = this.config.surface.width;
-  this.mapping.surfaceHeight = this.config.surface.height;
-  this.mapping.screenWidth = this.config.screen.width;
-  this.mapping.screenHeight = Math.floor(this.mapping.screenWidth / this.mapping.surfaceWidth * this.mapping.surfaceHeight);
-  this.mapping.offsetX = this.config.surface.origin.x *  this.mapping.screenWidth;
-  this.mapping.offsetY = this.config.surface.origin.y * this.mapping.screenHeight;
-  this._init(target);
-
+  document.getElementById(this.target).appendChild(template.content.firstChild);
   var proj = document.getElementById("projection_"+this.target);
   var over = document.getElementById("overlay_"+this.target);
+  this.canvas = proj;
+  this.overlay = over;
+};
+
+Projection.prototype.init = function() {
+  if (this.config.surface) {
+    this.mapping.surfaceWidth = this.config.surface.width;
+    this.mapping.surfaceHeight = this.config.surface.height;
+    this.mapping.screenWidth = this.config.screen.width;
+    this.mapping.screenHeight = Math.floor(this.mapping.screenWidth / this.mapping.surfaceWidth * this.mapping.surfaceHeight);
+    this.mapping.offsetX = this.config.surface.origin.x * this.mapping.screenWidth;
+    this.mapping.offsetY = this.config.surface.origin.y * this.mapping.screenHeight;
+  }
+  this._init();
+
+
   var t = this.config.matrix;
   var local = localStorage.getItem("matrix");
   if (this.config.preferCachedMatrix && local) {
     t = local;
   }
-  t = "matrix3d(" + t + ")";
-  proj.style["-webkit-transform"] = t;
-  proj.style["-moz-transform"] = t;
-  proj.style["-o-transform"] = t;
-  proj.style.transform = t;
 
-  //over.style["-webkit-transform"] = t;
-  //over.style["-moz-transform"] = t;
-  //over.style["-o-transform"] = t;
-  //over.style.transform = t;
-
-  this.canvas = proj;
-  this.overlay = over;
+  if (t) {
+    t = "matrix3d(" + t + ")";
+    this.canvas.style["-webkit-transform"] = t;
+    this.canvas.style["-moz-transform"] = t;
+    this.canvas.style["-o-transform"] = t;
+    this.canvas.style.transform = t;
+  }
 };
 
 Projection.prototype.saveCalibration = function() {
@@ -74,8 +81,8 @@ Projection.prototype.saveCalibration = function() {
   localStorage.setItem('matrix', matrix);
 };
 
-Projection.prototype.calibrate = function(target) {
-  this._init(target);
+Projection.prototype.calibrate = function() {
+  this._init(this.target);
   this.corners = [{'x':100, 'y':100}, {'x':500, 'y':100}, {'x':500, 'y':500}, {'x':100, 'y':500}];
   this.currentCorner = 0;
 

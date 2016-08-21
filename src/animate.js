@@ -2,6 +2,7 @@
 
 var Snap = require('snapsvg');
 var Projection = require('./projection');
+var AnimationWidget = require('../src/animationwidget');
 
 var Animate = {};
 
@@ -23,6 +24,16 @@ Animate.createElement = function(svgPath, params, callback) {
     });
   }
 };
+
+Animate.createWidget = function(svgPath, params, callback) {
+  Animate.createElement(svgPath, params, function(err, anim) {
+    if (err) {return callback(err, undefined);}
+    params.animation = anim;
+    var widget = new AnimationWidget(params);
+    callback(err, widget);
+  });
+};
+
 
 Animate._loadElement = function(xmlPath, params, callback) {
   var xhttp = new XMLHttpRequest();

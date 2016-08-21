@@ -43,16 +43,20 @@ describe("Projection Factory", function () {
 
   it('should throw due to incomplete configurations', function () {
     expect(function(){Animate.createProjection()}).to.throw(Error);
-    expect(function(){Animate.createProjection({parent: 'parent'})}).to.throw(Error);
-    expect(function(){Animate.createProjection({parent: 'parent',
-      surface: {width: 100, height: 100, origin: { x: 0.5, y: 0.5 }}})}).to.throw(Error);
-    expect(function(){Animate.createProjection({ parent: 'parent',
-      screen: {width: 600, height: 600}})}).to.throw(Error);
+    var p = Animate.createProjection({parent: 'parent'});
+    var coords = p.mapCoords(10, 10);
+    expect(coords.x).to.be.equal(10);
+    expect(coords.y).to.be.equal(10);
+    // expect(function(){Animate.createProjection({parent: 'parent',
+    //   surface: {width: 100, height: 100, origin: { x: 0.5, y: 0.5 }}})}).to.throw(Error);
+    // expect(function(){Animate.createProjection({ parent: 'parent',
+    //   screen: {width: 600, height: 600}})}).to.throw(Error);
   });
 
   it('should create a calibration view', function() {
     delete defaultConfig.matrix;
-    Animate.createProjection(defaultConfig);
+    var p = Animate.createProjection(defaultConfig);
+    p.calibrate();
     // click to set box somewhere
     var mEvent = new MouseEvent('dblclick', {
       view: window,
@@ -78,12 +82,14 @@ describe("Projection Factory", function () {
 
   it('should create a calibrated view', function() {
     var proj = Animate.createProjection(defaultConfig);
+    proj.calibrate();
     proj.showCoords();
   });
 
   it('should save a calibration result', function() {
     delete defaultConfig.matrix;
     var p = Animate.createProjection(defaultConfig);
+    p.calibrate();
     var kSave = new KeyboardEvent('keydown', {keyCode: 83, bubbles : true, cancelable : true });
     document.body.dispatchEvent(kSave);
   });
@@ -91,6 +97,7 @@ describe("Projection Factory", function () {
   it('should load a calibration result', function() {
     defaultConfig.preferCachedMatrix = true;
     var p = Animate.createProjection(defaultConfig);
+    p.init();
   });
 
   it('should add a Widget', function () {
