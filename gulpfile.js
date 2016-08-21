@@ -100,6 +100,7 @@ gulp.task('build-redist', function() {
   return browserify([
         'src/animate.js',
         'src/projection.js',
+        'src/animationwidget.js',
         'src/main.js'
       ],  {
         debug: !production,
