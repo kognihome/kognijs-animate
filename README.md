@@ -3,10 +3,11 @@
 
 Support the creation of reusable customized user interface elements based on SVG (using [Snap.svg](http://snapsvg.io/))
 and all the goodies modern web technology has to offer.
-In combination with the [rsb](https://github.com/aleneum/kognijs-rsb) and [ui](https://github.com/aleneum/kognijs-ui)
-module of the KogniJS framework, developers can couple interface behaviour directly to a smart environment's system state.
-It also contains helpers for projecting Browser-based GUIs onto flat surfaces to support Spatial Augmented Reality
-and interactive workspaces.
+This also includes helper functions for projecting browser-based interfaces onto flat surfaces to support Spatial Augmented Reality and interactive workspaces.
+
+This module is part of the [KogniJS]((https://travis-ci.org/aleneum/kognijs) framework.
+It is developed within the [KogniHome](https://kogni-home.de/) project to help developers to 
+create tailored and flexible interfaces for smart home environments.
 
 ## Table of Contents
 

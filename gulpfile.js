@@ -86,14 +86,14 @@ gulp.task('test-travis', function (done) {
   new Server({
     configFile: __dirname + '/karma.travis.conf.js',
     singleRun: true
-  }, done).start();
+  }, function() {done();}).start();
 });
 
 gulp.task('test', function (done) {
   new Server({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true
-  }, done).start();
+  }, function() {done();}).start();
 });
 
 gulp.task('build-redist', function() {
