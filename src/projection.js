@@ -189,6 +189,59 @@ Projection.prototype.resetWidgets = function () {
   }
 };
 
+Projection.prototype.resolveObjectReference = function(object_reference, center) {
+  center = center || false;
+  var result;
+  if (object_reference.object && object_reference.object.box) {
+    result = this._aabbToView(object_reference.object.box, center);
+    result.id = object_reference.object.object_id;
+    result.temperature = object_reference.object.object_temperature_celsius;
+    result.box = object_reference.object.box;
+  } else if (object_reference.object_id) {
+    var ob = this.model.detection.objects.filter(function(val) {
+      if (val.object_id.id === object_reference.object_id.id) {
+        return val.object_id.type === object_reference.object_id.type;
+      } else {
+        return false;
+      }
+    });
+    if (ob.length !== 1) {
+      if (object_reference.pos) {
+        var s = this.mapCoords(object_reference.pos.x, object_reference.pos.y);
+        result = {left: s[0], top: s[1], id: null, box: null};
+      } else {
+        console.log("do not know this object with type " + object_reference.object_id.type);
+        result = {id: object_reference.object_id, top: -1000, left: -1000, box: null};
+      }
+      //console.log(result);
+      return result;
+    }
+
+    ob = ob[0];
+    result = this._aabbToView(ob.box, center);
+    result.id = ob.object_id;
+    result.temperature = ob.object_temperature_celsius;
+    result.box = ob.box;
+  } else {
+    var s = this.mapCoords(object_reference.pos.x, object_reference.pos.y);
+    result = {left: s[0], top: s[1], id: null, box: null};
+  }
+  return result;
+};
+
+Projection.prototype._aabbToView = function(box, center) {
+  center = center || false;
+  var tr = this.mapCoords(box.left_front_bottom.x + box.width, box.left_front_bottom.y + box.depth);
+  var bl = this.mapCoords(box.left_front_bottom.x, box.left_front_bottom.y);
+  var w = tr[0] - bl[0];
+  var h = bl[1] - tr[1];
+  if (center) {
+    bl[0] = bl[0] + w/2;
+    tr[1] = tr[1] + h/2;
+  }
+  return {left: bl[0], top: tr[1], width: w, height: h};
+};
+
 // internal functions below...
 
 function adj(m) { // Compute the adjugate of m

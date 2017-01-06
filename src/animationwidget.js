@@ -33,7 +33,7 @@ AnimationWidget.prototype._update = function(value) {
   }
 
   if (this.resolve) {
-    this.animation.model.object_reference = this.resolveObjectReference(value.object_reference, true);
+    this.animation.model.object_reference = this.projection.resolveObjectReference(value.object_reference, true);
     if (this.moveToReference) {
       this.animation.moveTo(this.animation.model.object_reference.left - this.animation._s.attr("width")/2,
                             this.animation.model.object_reference.top - this.animation._s.attr("height")/2);
@@ -59,60 +59,6 @@ AnimationWidget.prototype.reset = function() {
     this.update = this._update;
     this.update(value);
   }
-};
-
-AnimationWidget.prototype.resolveObjectReference = function(object_reference, center) {
-  center = center || false;
-  var result;
-  if (object_reference.object && object_reference.object.box) {
-    result = this.aabbToView(object_reference.object.box, center);
-    result.id = object_reference.object.object_id;
-    result.temperature = object_reference.object.object_temperature_celsius;
-    result.box = object_reference.object.box;
-  } else if (object_reference.object_id) {
-    var ob = this.projection.model.detection.objects.filter(function(val) {
-      if (val.object_id.id === object_reference.object_id.id) {
-        return val.object_id.type === object_reference.object_id.type;
-      } else {
-        return false;
-      }
-    });
-    if (ob.length !== 1) {
-      if (object_reference.pos) {
-        var s = this.projection.mapCoords(object_reference.pos.x, object_reference.pos.y)
-        result = {left: s[0], top: s[1], id: null, box: null};
-      } else {
-        console.log("do not know this object with type " + object_reference.object_id.type);
-        result = {id: object_reference.object_id, top: -1000, left: -1000, box: null};
-      }
-      //console.log(result);
-      return result;
-    }
-
-    ob = ob[0];
-    result = this.aabbToView(ob.box, center);
-    result.id = ob.object_id;
-    result.temperature = ob.object_temperature_celsius;
-    result.box = ob.box;
-  } else {
-    var s = this.projection.mapCoords(object_reference.pos.x, object_reference.pos.y)
-    result = {left: s[0], top: s[1], id: null, box: null};
-  }
-  return result;
-};
-
-AnimationWidget.prototype.aabbToView = function(box, center) {
-  center = center || false;
-  var tr = this.projection.mapCoords(box.left_front_bottom.x + box.width,
-                                     box.left_front_bottom.y + box.depth);
-  var bl = this.projection.mapCoords(box.left_front_bottom.x, box.left_front_bottom.y);
-  var w = tr[0] - bl[0];
-  var h = bl[1] - tr[1];
-  if (center) {
-    bl[0] = bl[0] + w/2;
-    tr[1] = tr[1] + h/2;
-  }
-  return {left: bl[0], top: tr[1], width: w, height: h};
 };
 
 module.exports = AnimationWidget;
