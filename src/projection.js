@@ -169,6 +169,14 @@ Projection.prototype.mapCoords = function (x, y) {
   return [screen_x, screen_y];
 };
 
+Projection.prototype.addOverlay = function(id) {
+  var newElem = document.createElement('div');
+  newElem.id = id;
+  newElem.classList.add('overlay-child');
+  this.overlay.appendChild(newElem);
+  return newElem;
+};
+
 Projection.prototype.addWidget = function(widget, name) {
   name = name ||  "widget_" + this.widgets.length
   this.widgets[name] = widget;
