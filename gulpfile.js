@@ -82,16 +82,23 @@ gulp.task('build-tour', function () {
   return stream;
 });
 
-gulp.task('test-travis', function (done) {
+gulp.task('test-travis', ['test-redist'], function (done) {
   new Server({
     configFile: __dirname + '/karma.travis.conf.js',
     singleRun: true
   }, function() {done();}).start();
 });
 
-gulp.task('test', function (done) {
+gulp.task('test', ['test-redist'], function (done) {
   new Server({
     configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, function() {done();}).start();
+});
+
+gulp.task('test-redist', ['build-redist'], function (done) {
+  new Server({
+    configFile: __dirname + '/karma.redist.conf.js',
     singleRun: true
   }, function() {done();}).start();
 });

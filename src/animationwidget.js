@@ -41,21 +41,9 @@ AnimationWidget.prototype._update = function(value) {
   }
 
   for (var prop in this.animation._vars) {
-    var modelProp = prop;
-    // if (this.animation.mapping.hasOwnProperty(prop)) {
-    //   modelProp = this.animation.mapping[prop];
-    // }
-    if (value.hasOwnProperty(modelProp) && value[modelProp] !== null) {
-      var oldVal = (oldModel) ? oldModel[modelProp] : undefined;
-      var newVal = value[modelProp];
-      if ((typeof(newVal) == 'number') && (newVal % 1 > 0)){
-        // assume percentage for this case
-        if (newVal < 1) {
-          newVal = newVal.toFixed(2)
-        } else {
-          newVal = newVal.toFixed(1)
-        }
-      }
+    if (value.hasOwnProperty(prop) && value[prop] !== null) {
+      var oldVal = (oldModel) ? oldModel[prop] : undefined;
+      var newVal = value[prop];
       this.animation.set(prop, newVal, oldVal);
     }
   }

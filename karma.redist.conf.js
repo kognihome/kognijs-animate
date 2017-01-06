@@ -4,7 +4,7 @@ module.exports = function(config) {
     frameworks: ['mocha', 'sinon-chai', 'browserify'],
     files: [
       'redist/*.js',
-      'test/**/redist.spec.js'
+      'test/**/redist.spec.redist.js'
     ],
     client: {
       chai: {
