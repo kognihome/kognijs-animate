@@ -199,11 +199,13 @@ Projection.prototype.resolveObjectReference = function(object_reference, center)
     result.box = object_reference.object.box;
   } else if (object_reference.object_id) {
     var ob = this.model.detection.objects.filter(function(val) {
-      if (val.object_id.id === object_reference.object_id.id) {
+      // // the kognichef controller does not set the object id correctly
+      // // we have to rely on type exclusively
+      //if (val.object_id.id === object_reference.object_id.id) {
         return val.object_id.type === object_reference.object_id.type;
-      } else {
-        return false;
-      }
+      //} else {
+      //  return false;
+      //}
     });
     if (ob.length !== 1) {
       if (object_reference.pos) {
