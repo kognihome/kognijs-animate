@@ -396,7 +396,7 @@ Animation.prototype.getProgress = function(targetId, pathId) {
     var box = target.getBBox();
     var center = {x: box.x + box.width/2, y: box.y + box.height/2};
     var f = function(value) {
-      var point = Snap.path.getPointAtLength(path, value*len);
+      var point = Snap.path.getPointAtLength(path, Math.max(value, 0)*len);
       var mat = new Snap.Matrix();
       mat.translate(point.x-center.x, point.y-center.y);
       target.transform(mat);
@@ -466,6 +466,3 @@ Animation.prototype.applyTextAlign = function() {
 }
 
 module.exports = Animate;
-
-
-

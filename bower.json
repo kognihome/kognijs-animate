@@ -1,6 +1,6 @@
 {
   "name": "kognijs-animate",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "description": "KogniHome Web Toolkit",
   "main": [
       "redist/kognijs.animate.min.js"
