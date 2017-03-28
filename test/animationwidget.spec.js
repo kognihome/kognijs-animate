@@ -62,7 +62,7 @@ describe("AnimationWidget", function () {
   });
 
   it('should update a widget with box', function (done) {
-    params.resolveObjectReference = true;
+    params.useObjectReference = true;
     params.moveToReference = true;
     Animate.createWidget(animationSVG, params, function(err, widget) {
       widget.update(testWithBox);
@@ -71,7 +71,7 @@ describe("AnimationWidget", function () {
   });
 
   it('should update a widget with pos', function (done) {
-    params.resolveObjectReference = true;
+    params.useObjectReference = true;
     params.moveToReference = true;
     Animate.createWidget(animationSVG, params, function(err, anim) {
       anim.update(testWithPos);
@@ -80,7 +80,7 @@ describe("AnimationWidget", function () {
   });
 
   it('should update a widget with pos due to wrong ID', function (done) {
-    params.resolveObjectReference = true;
+    params.useObjectReference = true;
     params.moveToReference = true;
     Animate.createWidget(animationSVG, params, function(err, anim) {
       projection.model.detection = {objects: trackingResult};
@@ -90,7 +90,7 @@ describe("AnimationWidget", function () {
   });
 
   it('should NOT update a widget with ID', function (done) {
-    params.resolveObjectReference = true;
+    params.useObjectReference = true;
     params.moveToReference = true;
     Animate.createWidget(animationSVG, params, function(err, anim) {
       projection.model.detection = {objects: []};
@@ -100,7 +100,7 @@ describe("AnimationWidget", function () {
   });
 
   it('should update a widget with ID', function (done) {
-    params.resolveObjectReference = true;
+    params.useObjectReference = true;
     params.moveToReference = true;
     Animate.createWidget(animationSVG, params, function(err, anim) {
       projection.model.detection = {objects: trackingResult};
@@ -117,4 +117,3 @@ describe("AnimationWidget", function () {
     });
   });
 });
-

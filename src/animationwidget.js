@@ -14,7 +14,7 @@ function AnimationWidget(params) {
 
   this.projection = params.projection;
   this.animation = params.animation;
-  this.resolve = params.resolveObjectReference;
+  this.useObjectReference = params.useObjectReference;
   this.moveToReference = params.moveToReference;
   this.projection.overlay.appendChild(document.getElementById(params.id));
   this.reset();
@@ -32,7 +32,7 @@ AnimationWidget.prototype._update = function(value) {
     this.timeoutTimer = setTimeout(function(){_this.update(value)}, this.timeout);
   }
 
-  if (this.resolve) {
+  if (this.useObjectReference) {
     this.animation.model.object_reference = this.projection.resolveObjectReference(value.object_reference, true);
     if (this.moveToReference) {
       this.animation.moveTo(this.animation.model.object_reference.left - this.animation._s.attr("width")/2,
