@@ -150,7 +150,7 @@ Projection.prototype.showCoords = function() {
   var stepY = map.height/10;
 
   for (var x = -offsetX; x <= map.width - offsetX; x +=stepX) {
-    for (var y = -offsetY; y <= map.height - offsetY; y +=stepY) {
+    for (var y = - map.height + offsetY; y <= offsetY; y +=stepY) {
       var s = this.mapCoords(x, y);
       ctx.beginPath();
       ctx.arc(s[0], s[1], 5, 0, Math.PI*2, true);
