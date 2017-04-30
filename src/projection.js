@@ -82,7 +82,6 @@ Projection.prototype.saveCalibration = function() {
 };
 
 Projection.prototype.calibrate = function() {
-  this._init(this.target);
   this.corners = [{'x':100, 'y':100}, {'x':500, 'y':100}, {'x':500, 'y':500}, {'x':100, 'y':500}];
   this.currentCorner = 0;
 
@@ -93,7 +92,7 @@ Projection.prototype.calibrate = function() {
   while(children.length){
     container.appendChild(children[0]);
   }
-  document.getElementById("projection_" + this.target).setAttribute("border", "solid red 2px");
+  document.getElementById("projection_" + this.target).style.border = "solid red 2px";
   var _this = this;
 	window.addEventListener('dblclick', function(evnt) {
     _this.corners[_this.currentCorner].x = evnt.pageX;
