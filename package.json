@@ -20,6 +20,7 @@
   "devDependencies": {
     "browser-sync": "*",
     "browserify": "*",
+    "browserify-istanbul": "*",
     "chai": "*",
     "gulp": "^4.0.0",
     "gulp-rename": "*",
