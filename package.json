@@ -1,6 +1,6 @@
 {
   "name": "kognijs-animate",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "KogniHome Web Toolkit",
   "main": "src/animate.js",
   "files": [
@@ -8,31 +8,36 @@
     "src/projection.js",
     "src/animationwidget.js"
   ],
+  "scripts": {
+    "build": "gulp build-redist",
+    "dev": "gulp serve",
+    "test": "gulp test",
+    "travis": "gulp test-travis"
+  },
   "dependencies": {
     "snapsvg": "*"
   },
   "devDependencies": {
     "browser-sync": "*",
     "browserify": "*",
-    "lodash": "*",
-    "gulp": "*",
+    "chai": "*",
+    "gulp": "^4.0.0",
     "gulp-rename": "*",
     "gulp-uglify": "*",
-    "resolve": "*",
-    "vinyl-source-stream": "*",
-    "vinyl-buffer": "*",
-    "karma-sinon-chai": "*",
-    "sinon": "*",
-    "chai": "*",
-    "sinon-chai": "*",
     "karma": "*",
-    "mocha": "*",
-    "karma-mocha": "*",
-    "karma-firefox-launcher": "*",
     "karma-browserify": "*",
-    "watchify": "*",
-    "browserify-istanbul": "*",
     "karma-coverage": "*",
-    "karma-coveralls": "*"
+    "karma-coveralls": "*",
+    "karma-firefox-launcher": "*",
+    "karma-mocha": "*",
+    "karma-sinon-chai": "*",
+    "lodash": "*",
+    "mocha": "*",
+    "resolve": "*",
+    "sinon": "*",
+    "sinon-chai": "*",
+    "vinyl-buffer": "*",
+    "vinyl-source-stream": "*",
+    "watchify": "*"
   }
 }

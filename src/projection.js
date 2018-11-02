@@ -89,6 +89,9 @@ Projection.prototype.calibrate = function() {
   template.innerHTML = Projection.CALIB;
   var children = template.content.children;
   var container = document.getElementById("container_" + this.target);
+  if (container === null) {
+    throw new Error("Projection container not found. Did you call init() of the projection?")
+  }
   while(children.length){
     container.appendChild(children[0]);
   }

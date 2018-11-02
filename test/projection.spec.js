@@ -56,6 +56,8 @@ describe("Projection Factory", function () {
   it('should create a calibration view', function() {
     delete defaultConfig.matrix;
     var p = Animate.createProjection(defaultConfig);
+    expect(function(){p.calibrate()}).to.throw("Projection container not found. Did you call init() of the projection?");
+    p.init();
     p.calibrate();
     // click to set box somewhere
     var mEvent = new MouseEvent('dblclick', {
@@ -81,14 +83,16 @@ describe("Projection Factory", function () {
   });
 
   it('should create a calibrated view', function() {
-    var proj = Animate.createProjection(defaultConfig);
-    proj.calibrate();
-    proj.showCoords();
+    var p = Animate.createProjection(defaultConfig);
+    p.init();
+    p.calibrate();
+    p.showCoords();
   });
 
   it('should save a calibration result', function() {
     delete defaultConfig.matrix;
     var p = Animate.createProjection(defaultConfig);
+    p.init();
     p.calibrate();
     var kSave = new KeyboardEvent('keydown', {keyCode: 83, bubbles : true, cancelable : true });
     document.body.dispatchEvent(kSave);
