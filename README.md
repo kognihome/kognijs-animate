@@ -69,7 +69,7 @@ object creation is done and the object can savely be used.
 
 ```javascript
 var animation;
-Animate.createElement('data/step01.svg', {parent:'step01'}, function(anim) {animation = anim});
+Animate.createElement('data/step01.svg', {parent:'step01'}, function(err, anim) {animation = anim});
 ```
 | Result | SVG Structure |
 |:------:|--------------:|
@@ -148,10 +148,10 @@ The value of the variables can be altered with the `Animation.set(variableName, 
 
 ```javascript
 var options05 = {parent: 'step05', map: {'time':['time'], 'progress': [{element:'circle', path:'circlePath'}]}};
-Animate.createElement('data/step05.svg', options05, function(anim) {
+Animate.createElement('data/step05.svg', options05, function(err, anim) {
   window.step05 = anim;
-  step05.set('time', "12:34");
-  step05.set('progress', 0.9);
+  anim.set('time', "12:34");
+  anim.set('progress', 0.9);
 });
 ```
 
@@ -177,9 +177,9 @@ var options06 = {parent: 'step06', map: {
   ]
 }};
 
-Animate.createElement('data/step05.svg', options06, function(anim) {
+Animate.createElement('data/step05.svg', options06, function(err, anim) {
   window.step06 = anim;
-  step06.set('time', '04:45');
+  anim.set('time', '04:45');
 });
 ```
 
@@ -214,8 +214,8 @@ var options07 = {parent: 'step07', style: style, map: {
 var times = ['18:21', '19:45', '21:17', '23:41', '1:19', '2:01','3:33', '5:11'];
 var idx = 0;
 
-KogniJS.Animate.createElement('data/step05.svg', options07, function(anim) {
-  setInterval(function() {idx = (idx + 1) % times.length; step07.set('time', times[idx]);}, 300);
+KogniJS.Animate.createElement('data/step05.svg', options07, function(err, anim) {
+  setInterval(function() {idx = (idx + 1) % times.length; anim.set('time', times[idx]);}, 300);
 });
 
 ```
@@ -239,14 +239,15 @@ or [paper](http://paperjs.org/) as you are used to.
 
 ![](examples/data/static_calibrationDefault.png)
 
-```
+```javascript
 var defaultConfig = {
       matrix: "1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0,  0, 0, 0, 1",
       surface: { width: 100, height: 100, origin: { x: 0.5, y: 0.5 }},
-      screen: {width: 600, height: 600}
+      screen: {width: 600, height: 600},
+      parent: "exampleCanvas"
     };
 
-var defaultCanvas = Animate.createProjection('exampleCanvas', defaultConfig);
+var defaultCanvas = Animate.createProjection(defaultConfig);
 defaultCanvas.showCoords();
 ```
 
@@ -274,10 +275,11 @@ var calibratedConfig = {
   matrix: "0.829438, 0.071225, 0, 0.000103098, 0.0596609, 0.50144, 0, -0.000173317, 0, 0, 1, 0, 25, 22, 0, 1",
   preferCachedMatrix: true,
   surface: { width: 100, height: 100, origin: { x: 0.5, y: 0.5 }},
-  screen: { width: 600, height: 600}
+  screen: { width: 600, height: 600},
+  parent: "calibratedCanvas"
 };
 
-var calibratedCanvas = KogniJS.Animate.createProjection('calibratedCanvas', calibratedConfig);
+var calibratedCanvas = KogniJS.Animate.createProjection(calibratedConfig);
 calibratedCanvas.showCoords();
 ```
 
