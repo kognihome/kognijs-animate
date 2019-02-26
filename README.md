@@ -304,3 +304,7 @@ It is part of the research collaboration project [KogniHome](kogni-home.de) and 
 arising within this project.
 However, feel free to open issues, provide feedback about design decisions of file pull requests.
 Every kind of support is appreciated.
+
+## Acknowledgements
+
+The development of this software was supported through project grants [KogniHome](kogni-home.de) (German Federal Ministry of Education and Research (BMBF) grant no. 16SV7054K) at Bielefeld University.

@@ -1,8 +1,13 @@
 {
   "name": "kognijs-animate",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "KogniHome Web Toolkit",
   "main": "src/animate.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kognihome/kognijs-animate.git"
+  },
+  "license": "MIT",
   "files": [
     "src/animate.js",
     "src/projection.js",
