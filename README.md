@@ -1,4 +1,4 @@
-# KogniJS - Animate [![Build Status](https://travis-ci.org/aleneum/kognijs-animate.svg?branch=master)](https://travis-ci.org/aleneum/kognijs-animate) [![Coverage Status](https://coveralls.io/repos/github/aleneum/kognijs-animate/badge.svg?branch=master)](https://coveralls.io/github/aleneum/kognijs-animate?branch=master)
+# KogniJS - Animate [![Build Status](https://travis-ci.org/aleneum/kognijs-animate.svg?branch=master)](https://travis-ci.org/aleneum/kognijs-animate) [![Coverage Status](https://coveralls.io/repos/github/aleneum/kognijs-animate/badge.svg?branch=master)](https://coveralls.io/github/aleneum/kognijs-animate?branch=master) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1491298.svg)](https://doi.org/10.5281/zenodo.1491298)
 
 
 Support the creation of reusable customized user interface elements based on SVG (using [Snap.svg](http://snapsvg.io/))
